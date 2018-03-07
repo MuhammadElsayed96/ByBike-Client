@@ -1,6 +1,7 @@
 package com.muhammadelsayed.bybike.activity;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_SETTINGS = "settings";
     public static String CURRENT_TAG = TAG_HOME;
 
+
     // toolbar titles respected to selected nav menu item
     private String[] activityTitles;
 
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         mHandler = new Handler();
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -74,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         txtEmail = navHeader.findViewById(R.id.email);
         imgProfile = navHeader.findViewById(R.id.img_profile);
 
-
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
 
@@ -83,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         // initializing navigation view
         setUpNavigationView();
-
-
 
         if (savedInstanceState == null) {
             navItemIndex = 0;
@@ -101,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+                if(item.isChecked()) {
+
+                    drawerLayout.closeDrawers();
+                    return true;
+                }
                 // Check to see which item was clicked and perform appropriate action
                 switch (item.getItemId()) {
                     case R.id.nav_home:
@@ -143,8 +149,9 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 0;
                 }
 
-                item.setChecked(true);
+
                 loadFragment();
+                item.setChecked(true);
 
                 return true;
             }
@@ -187,10 +194,12 @@ public class MainActivity extends AppCompatActivity {
         Runnable mPendingRunnable = new Runnable() {
             @Override
             public void run() {
+
                 Fragment fragment = getFragment();
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
-                fragmentTransaction.commitAllowingStateLoss();
+                fragmentTransaction.addToBackStack(fragment.getTag());
+                fragmentTransaction.commit();
             }
         };
 
