@@ -4,37 +4,32 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_home"
-            android:title="@string/nav_home"
-            android:icon="@drawable/ic_home_black_24dp" />
-
-        <item
             android:id="@+id/nav_profile"
             android:title="@string/nav_profile"
             android:icon="@drawable/ic_person_black_24dp" />
 
         <item
-            android:id="@+id/nav_history"
-            android:title="@string/nav_history"
+            android:id="@+id/nav_orders"
+            android:title="@string/nav_orders"
             android:icon="@drawable/ic_history_black_24dp" />
 
         <item
-            android:id="@+id/nav_notifications"
-            android:title="@string/nav_notifications"
-            android:icon="@drawable/ic_notifications_black_24dp" />
+            android:id="@+id/nav_invite_friends"
+            android:title="@string/nav_invite_friends"
+            android:icon="@drawable/ic_history_black_24dp" />
 
         <item
-            android:id="@+id/nav_settings"
-            android:title="@string/nav_settings"
-            android:icon="@drawable/ic_settings_black_24dp" />
+            android:id="@+id/nav_promo"
+            android:title="@string/nav_promo"
+            android:icon="@drawable/ic_history_black_24dp" />
 
 
-        <item android:title="Others">
+        <item android:title="@string/others">
 
             <menu>
                 <item
-                    android:id="@+id/nav_about_us"
-                    android:title="@string/nav_about_us" />
+                    android:id="@+id/nav_get_help"
+                    android:title="@string/nav_get_help" />
 
                 <item
                     android:id="@+id/nav_privacy_policy"
