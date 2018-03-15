@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,18 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity
-            android:name=".activity.LoginActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.SignupActivity"
-            android:screenOrientation="portrait" />
 
         <!-- Maps Android Key -->
         <meta-data
@@ -34,11 +21,47 @@
             android:value="AIzaSyDkbS_dsjAHfDEsbcQOHagkN6VfL00UJpQ" />
 
         <!-- Maps -->
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.AboutUsActivity" />
-        <activity android:name=".activity.PrivacyPolicyActivity" />
-        <activity android:name=".activity.ContactUsActivity" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
+        <activity
+            android:name=".activity.AboutUsActivity"
+            android:label="About us"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activity.PrivacyPolicyActivity"
+            android:label="Privacy policy"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activity.ContactUsActivity"
+            android:label="Contact us"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:label="Profile"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activity.OrdersActivity"
+            android:label="Orders"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activity.PromoCodeActivity"
+            android:label="Promo Code"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activity.InviteFriendsActivity"
+            android:label="Invite friends"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activity.GetHelpActivity"
+            android:label="Get help"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

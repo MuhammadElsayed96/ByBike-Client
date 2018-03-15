@@ -1,37 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="175dp"
     android:background="@color/colorPrimary"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    android:gravity="bottom"
-    android:padding="16dp">
+    android:padding="32dp">
 
     <ImageView
-        android:id="@+id/img_profile"
-        android:layout_width="@dimen/profile_width"
-        android:layout_height="@dimen/profile_height"
-        android:src="@drawable/avatar"
-        />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MOHAMMED ABDULHADY"
-        android:textColor="#FFF"
-        android:textStyle="bold"
-        android:layout_marginTop="5dp"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="mo15hammed@hotmail.com"
-        android:textColor="#FFF"
-        />
-
+        android:src="@drawable/logo"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>
