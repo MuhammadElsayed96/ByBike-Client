@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
     }
@@ -69,23 +71,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback{
         return mView;
     }
 
+
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         mMapView = mView.findViewById(R.id.map);
+
+        Log.i("TEST", "View Created");
         if(mMapView != null) {
+
             mMapView.onCreate(null);
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
+    @Override
+    public void onDestroyView() {
+        Log.i("TEST", "View Destroyed");
+
+        mGoogleMap.clear();
+        mMapView.onDestroy();
+        super.onDestroyView();
+    }
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        MapsInitializer.initialize(getContext());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            MapsInitializer.initialize(getContext());
+        }
 
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
