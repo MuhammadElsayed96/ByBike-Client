@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,31 +52,8 @@ public class MainActivity extends AppCompatActivity {
                         Intent profile = new Intent(MainActivity.this, ProfileActivity.class);
                         startActivity(profile);
                         break;
-                    case R.id.nav_orders:
-
-                        Intent orders = new Intent(MainActivity.this, OrdersActivity.class);
-                        startActivity(orders);
-                        break;
-                    case R.id.nav_promo:
-                        Intent promo = new Intent(MainActivity.this, PromoCodeActivity.class);
-                        startActivity(promo);
-                        break;
-                    case R.id.nav_invite_friends:
-                        Intent inviteFriends = new Intent(MainActivity.this, InviteFriendsActivity.class);
-                        startActivity(inviteFriends);
-                        break;
-
-                    case R.id.nav_get_help:
-                        // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, GetHelpActivity.class));
-                        break;
-                    case R.id.nav_privacy_policy:
-                        // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
-                        break;
-                    case R.id.nav_contact_us:
-                        // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, ContactUsActivity.class));
+                    case R.id.logout:
+                        Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_LONG).show();
                         break;
                 }
 
