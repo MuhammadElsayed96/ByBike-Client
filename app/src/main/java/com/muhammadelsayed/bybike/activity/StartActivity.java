@@ -1,31 +1,40 @@
 package com.muhammadelsayed.bybike.activity;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.TextView;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.fragment.LoginFragment;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 
 public class StartActivity extends AppCompatActivity {
+
+
+    private static FragmentManager fragmentManager;
+    private Context mContext = StartActivity.this;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+                    setContentView(R.layout.activity_start);
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String userToken = pref.getString("USER_TOKEN", "USER_NOT_FOUND");
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Toolbar");        setSupportActionBar(toolbar);
+        fragmentManager = getSupportFragmentManager();
 
-        TextView dummy = findViewById(R.id.dummy);
-        dummy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            }
-        });
+        // If savedinstnacestate is null then replace login fragment
+        if (savedInstanceState == null) {
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.frameContainer, new LoginFragment(),
+                            Utils.LoginFragment).commit();
+        }
     }
 }

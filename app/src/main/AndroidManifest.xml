@@ -28,7 +28,9 @@
         <!-- Maps -->
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop">
+
+        </activity>
         <activity
             android:name=".activity.AboutUsActivity"
             android:label="About us"
@@ -61,27 +63,11 @@
             android:name=".activity.GetHelpActivity"
             android:label="Get help"
             android:launchMode="singleTop" />
-        <activity
-            android:name=".activity.LoginActivitytest"
-            android:label="@string/title_activity_login" />
-        <activity
-            android:name=".activity.LoginActivity"
-            android:label=""
-            android:parentActivityName=".activity.StartActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.StartActivity" />
-        </activity>
-
-        <activity
-            android:name=".activity.RegisterActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
             android:name=".activity.StartActivity"
             android:label=""
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme_Custom_NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

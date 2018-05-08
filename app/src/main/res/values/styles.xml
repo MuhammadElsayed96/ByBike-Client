@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,21 +9,28 @@
     </style>
 
     <style name="Theme_Custom" parent="@style/AppTheme">
-        <item name="windowActionBar">false</item>
+        <item name="windowActionBar">true</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowActionBarOverlay">true</item>
+
+    </style>
+
+    <style name="Theme_Custom_NoActionBar" parent="@style/AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowActionBarOverlay">false</item>
+        <item name="android:windowActionBarOverlay">false</item>
+
     </style>
 
     <style name="CustomActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActionBarOverlay">true</item>
-        <!-- Support library compatibility -->
         <item name="windowActionBarOverlay">true</item>
     </style>
 
-    <style name="MyProgressDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-
-        <item name="android:textSize">16dp</item>
-        <item name="colorAccent">#77ca99</item>
+    <style name="ProgressDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textSize">16sp</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
+
 
 </resources>
