@@ -15,7 +15,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="C"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme_Custom">
@@ -23,27 +23,32 @@
         <!-- Maps Android Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDkbS_dsjAHfDEsbcQOHagkN6VfL00UJpQ" />
+            android:value="@string/google_maps_key" />
 
         <!-- Maps -->
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTop">
+            android:label="@string/app_name">
 
         </activity>
         <activity
             android:name=".activity.ProfileActivity"
             android:label="Profile"
             android:launchMode="singleTop" />
-
         <activity
             android:name=".activity.StartActivity"
+            android:launchMode="singleTop"
             android:theme="@style/Theme_Custom_NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.PlaceSearchActivity"
+            android:label="@string/select_locations">
+
         </activity>
     </application>
 
