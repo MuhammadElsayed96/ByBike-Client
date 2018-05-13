@@ -9,12 +9,18 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBufferResponse;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -23,10 +29,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.model.PlaceModel;
-import com.muhammadelsayed.bybike.activity.utils.ListViewCustomAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlaceSearchActivity extends AppCompatActivity {
 
@@ -44,20 +51,42 @@ public class PlaceSearchActivity extends AppCompatActivity {
     List<PlaceModel> placesFrom = new ArrayList<>();
     List<PlaceModel> placesTo = new ArrayList<>();
 
+    // The last specified places by user
+    public static Place placeFrom, placeTo;
 
-    public static SearchView searchFrom, searchTo;
-    ListView resultsList;
-    ListViewCustomAdapter listAdapter;
+    // widgets
     private Toolbar toolbar;
+    public static SearchView searchFrom, searchTo;
+    private ListView resultsList;
+    private LinearLayout locaionControls, myLocation, chooseLocation;
+
+    final ArrayList<Map<String,String>> itemDataList = new ArrayList<Map<String,String>>();
+
+
+    // This method use SimpleAdapter to show search results in the ListView.
+    private void simpleAdapterListView(final List<PlaceModel> places) {
+
+
+        itemDataList.clear();
+
+        for(int i =0; i < places.size(); i++) {
+            Map<String,String> listItemMap = new HashMap<String,String>();
+            listItemMap.put("name", places.get(i).getPrimaryText());
+            listItemMap.put("address", places.get(i).getSecondaryText());
+
+            itemDataList.add(listItemMap);
+        }
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this,itemDataList,android.R.layout.simple_list_item_2,
+                new String[]{"name","address"},new int[]{android.R.id.text1,android.R.id.text2});
+        resultsList.setAdapter(simpleAdapter);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.place_search_activity);
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
 
         // initializing activity widgets
         setupWidgets();
@@ -69,12 +98,52 @@ public class PlaceSearchActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    listAdapter = new ListViewCustomAdapter(placesFrom, mContext);
-                    resultsList.setAdapter(listAdapter);
+
+                    simpleAdapterListView(placesFrom);
+
+                    locaionControls.setVisibility(View.VISIBLE);
+
+                    myLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            searchFrom.setQuery("My Location", true);
+                            Log.d(TAG, "onClick: searchFrom.getQuery() ====" + searchFrom.getQuery());
+                            searchFrom.clearFocus();
+                        }
+                    });
+
+                    chooseLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    resultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                            final int index = position;
+
+                            mGeoDataClient.getPlaceById(placesFrom.get(position).getPlaceID())
+                                    .addOnSuccessListener(new OnSuccessListener<PlaceBufferResponse>() {
+                                        @Override
+                                        public void onSuccess(PlaceBufferResponse places) {
+                                            placeFrom = places.get(0);
+                                            Log.d(TAG, "onSuccess: placeFrom == " + placeFrom);
+                                            if (placesFrom.size() > 0)
+                                                searchFrom.setQuery(placesFrom.get(index).getPrimaryText(), true);
+                                        }
+                                    });
+
+
+                        }
+                    });
+
                 } else {
 
-                    listAdapter = new ListViewCustomAdapter(new ArrayList<PlaceModel>(), mContext);
-                    resultsList.setAdapter(listAdapter);
+                    locaionControls.setVisibility(View.GONE);
+                    simpleAdapterListView(new ArrayList<PlaceModel>());
                 }
             }
         });
@@ -106,16 +175,24 @@ public class PlaceSearchActivity extends AppCompatActivity {
                                     response.getPlaceId()
                             );
 
-                            if (placesFrom.indexOf(place) == -1) {
-                                placesFrom.add(place);
-                            }
+                            if (placesFrom.contains(place))
+                                continue;
 
-                            listAdapter = new ListViewCustomAdapter(placesFrom, mContext);
-                            resultsList.setAdapter(listAdapter);
+                            placesFrom.add(place);
+
                         }
 
+                        // releasing the buffer to avoid memory leaks
                         autocompletePredictions.release();
 
+                        // fill ListView with the result
+                        simpleAdapterListView(placesFrom);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: Exception : " + e.getMessage());
                     }
                 });
 
@@ -130,12 +207,62 @@ public class PlaceSearchActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
 
                 if (hasFocus) {
-                    listAdapter = new ListViewCustomAdapter(placesTo, mContext);
-                    resultsList.setAdapter(listAdapter);
+
+                    // show results on the ListView
+                    simpleAdapterListView(placesTo);
+
+                    // show the Location Controls {My Location, Set location on map}
+                    locaionControls.setVisibility(View.VISIBLE);
+
+                    myLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            searchTo.setQuery("My Location", false);
+                            Log.d(TAG, "onClick: searchTo.getQuery() ==== " + searchTo.getQuery());
+
+                            searchTo.clearFocus();
+                        }
+                    });
+
+                    chooseLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+                    resultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                            final int index = position;
+
+                            Log.d(TAG, "onItemClick: list item clicked !!!!!!!!!!!!!!!!!!!");
+
+                            Log.d(TAG, "onItemClick: searchTo.getQuery() ==== " + searchTo.getQuery());
+
+                            mGeoDataClient.getPlaceById(placesTo.get(position).getPlaceID())
+                                    .addOnSuccessListener(new OnSuccessListener<PlaceBufferResponse>() {
+                                        @Override
+                                        public void onSuccess(PlaceBufferResponse places) {
+                                            placeTo = places.get(0);
+                                            Log.d(TAG, "onSuccess: placeFrom == " + placesTo);
+
+                                            if (placesTo.size() > 0)
+                                                searchTo.setQuery(placesTo.get(index).getPrimaryText(), true);
+
+                                            Log.d(TAG, "onSuccess: searchTo.getQuery() ==== " + searchTo.getQuery());
+                                        }
+                                    });
+
+                        }
+                    });
+
                 } else {
 
-                    listAdapter = new ListViewCustomAdapter(new ArrayList<PlaceModel>(), mContext);
-                    resultsList.setAdapter(listAdapter);
+                    locaionControls.setVisibility(View.GONE);
+                    simpleAdapterListView(new ArrayList<PlaceModel>());
                 }
             }
         });
@@ -167,17 +294,18 @@ public class PlaceSearchActivity extends AppCompatActivity {
                                     response.getPlaceId()
                             );
 
-                            if (placesTo.indexOf(place) == -1) {
-                                placesTo.add(place);
-                            }
+                            if (placesTo.contains(place))
+                                continue;
 
-                            Log.d(TAG, "onSuccess: PLACESTO : " + placesTo);
+                            placesTo.add(place);
 
-                            listAdapter = new ListViewCustomAdapter(placesTo, mContext);
-                            resultsList.setAdapter(listAdapter);
                         }
 
+                        // releasing the buffer to avoid memory leaks
                         autocompletePredictions.release();
+
+                        // fill ListView with the results
+                        simpleAdapterListView(placesTo);
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -199,13 +327,31 @@ public class PlaceSearchActivity extends AppCompatActivity {
                 // app icon in action bar clicked; go home
                 Intent intent = new Intent(this, MainActivity.class);
 
-                Log.d(TAG, "onBackPressed: BACK BUTTON PRESSED");
+                if (placeFrom != null || searchFrom.getQuery().toString().equals("My Location")) {
+                    intent.putExtra("PLACE_FROM", searchFrom.getQuery().toString());
 
-                intent.putExtra("SEARCH_FROM", searchFrom.getQuery().toString());
-                intent.putExtra("SEARCH_TO", searchTo.getQuery().toString());
+                    if (placeFrom != null) {
+                        intent.putExtra("PLACE_FROM_ID", placeFrom.getId());
+                    }
+                }
+
+
+                Log.d(TAG, "onBackPressed: searchTo.getQuery() ==== " + searchTo.getQuery().toString());
+
+                if (placeTo != null || searchFrom.getQuery().toString().equals("My Location")) {
+                    intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
+                    if (placeTo != null) {
+
+                        intent.putExtra("PLACE_TO_ID", placeTo.getId());
+                        Log.d(TAG, "onBackPressed: PLACE TO ==== " + placeTo.getName());
+
+                    }
+                }
+
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -219,8 +365,27 @@ public class PlaceSearchActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
 
 
-        intent.putExtra("SEARCH_FROM", searchFrom.getQuery().toString());
-        intent.putExtra("SEARCH_TO", searchTo.getQuery().toString());
+        if (placeFrom != null || searchFrom.getQuery().toString().equals("My Location")) {
+            intent.putExtra("PLACE_FROM", searchFrom.getQuery().toString());
+
+            if (placeFrom != null) {
+                intent.putExtra("PLACE_FROM_ID", placeFrom.getId());
+            }
+        }
+
+
+        Log.d(TAG, "onBackPressed: searchTo.getQuery() ==== " + searchTo.getQuery().toString());
+
+        if (placeTo != null || searchFrom.getQuery().toString().equals("My Location")) {
+            intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
+            if (placeTo != null) {
+
+                intent.putExtra("PLACE_TO_ID", placeTo.getId());
+                Log.d(TAG, "onBackPressed: PLACE TO ==== " + placeTo.getName());
+
+            }
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         super.onBackPressed();
@@ -232,9 +397,17 @@ public class PlaceSearchActivity extends AppCompatActivity {
     private void setupWidgets() {
         mContext = getApplicationContext();
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         resultsList = findViewById(R.id.listview_place_result);
+
+        locaionControls = findViewById(R.id.layout_location_controls);
+        locaionControls.setVisibility(View.GONE);
+        myLocation = findViewById(R.id.myLocation);
+        chooseLocation = findViewById(R.id.chooseLocation);
 
         searchFrom = findViewById(R.id.search_from);
         searchTo = findViewById(R.id.search_to);

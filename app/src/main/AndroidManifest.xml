@@ -47,6 +47,7 @@
         </activity>
         <activity
             android:name=".activity.PlaceSearchActivity"
+            android:launchMode="singleTop"
             android:label="@string/select_locations">
 
         </activity>

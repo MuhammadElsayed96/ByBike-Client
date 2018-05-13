@@ -5,103 +5,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
 
-        <include
-            layout="@layout/app_bar_main"
+
+    <android.support.v7.widget.SearchView
+        android:layout_below="@+id/app_bar"
+        android:id="@+id/search_from"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:queryHint="From"
+        app:iconifiedByDefault="false"
+        android:focusable="false"
+        >
+
+    </android.support.v7.widget.SearchView>
+    <android.support.v7.widget.SearchView
+        android:layout_below="@+id/search_from"
+        android:id="@+id/search_to"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:queryHint="To"
+        app:iconifiedByDefault="false"
+        android:focusable="false">
+
+    </android.support.v7.widget.SearchView>
+
+    <LinearLayout
+        android:id="@+id/layout_location_controls"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_to"
+        android:visibility="visible">
+        <LinearLayout
+            android:id="@+id/myLocation"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="100dp"/>
-
-
-        <android.support.v7.widget.SearchView
-            android:id="@+id/search_from"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:queryHint="From"
-            app:iconifiedByDefault="false"
-            android:focusable="false"
-            >
-
-        </android.support.v7.widget.SearchView>
-        <android.support.v7.widget.SearchView
-
-            android:id="@+id/search_to"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:queryHint="To"
-            app:iconifiedByDefault="false"
-            android:focusable="false">
-
-        </android.support.v7.widget.SearchView>
-
-        <ListView
-            android:id="@+id/listview_place_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            />
+            android:layout_height="50dp"
+            android:gravity="left|center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/grey_button_click"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_gps"
+                android:layout_marginRight="30dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Location"
+                android:textColor="#000"
+                android:textSize="18sp"
+                />
+        </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:background="#DDD"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:id="@+id/chooseLocation"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="left|center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/grey_button_click"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_marker"
+                android:layout_marginRight="30dp"/>
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left|center"
-                android:layout_margin="10dp">
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/ic_gps"
-                    android:layout_marginRight="30dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My Location"
-                    android:textColor="#000"
-                    android:textSize="18sp"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:background="#DDD"
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left|center"
-                android:layout_margin="10dp">
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/ic_marker"
-                    android:layout_marginRight="30dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Set location on map"
-                    android:textColor="#000"
-                    android:textSize="18sp"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:background="#DDD"
-                android:layout_width="match_parent"
-                android:layout_height="1dp" />
-
-
+                android:text="Set location on map"
+                android:textColor="#000"
+                android:textSize="18sp"
+                />
         </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="#DDD"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+    </LinearLayout>
+
+
+    <ListView
+        android:id="@+id/listview_place_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+
+        >
+
+    </ListView>
 
 </LinearLayout>

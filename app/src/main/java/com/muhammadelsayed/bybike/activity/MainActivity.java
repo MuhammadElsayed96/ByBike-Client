@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,18 +26,34 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.EncodedPolyline;
 import com.muhammadelsayed.bybike.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -61,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Context mContext;
 
 
+    private static LatLng origin = null;
+    private static LatLng destination = null;
+
     // widgets
     private RelativeLayout searchPlace;
     private TextView searchFrom, searchTo;
@@ -76,21 +96,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // initializing activity widgets
-        setupWidgets();
-
-        // initializing navigation view
-        setUpNavigationView();
-
         getLocationPermission();
 
-        getDeviceLocation();
-    }
+        getDeviceLocation(null);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setupWidgets();
+
     }
 
 
@@ -114,8 +124,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // initializing activity widgets
+        setupWidgets();
+
+        // initializing navigation view
+        setUpNavigationView();
     }
 
+    /**
+     * initializes the map fragment
+     */
     private void initMap() {
         Log.d(TAG, "initMap: initializing the map...");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -125,7 +143,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
+    /**
+     * gets the required permissions from the user to access his location
+     */
     private void getLocationPermission() {
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {
@@ -134,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
 
         // getApplicationContext() <---> this.getApplicationContext()
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if(ContextCompat.checkSelfPermission(getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
                 initMap();
 
@@ -156,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationPermissionGranted = false;
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE:
-                if(grantResults.length > 0) { // some permission was granted
+                if (grantResults.length > 0) { // some permission was granted
 
                     for (int grantResult : grantResults) {
                         if (grantResult != PackageManager.PERMISSION_GRANTED) {
@@ -176,66 +196,217 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void getDeviceLocation() {
+    /**
+     * gets the device's current location and move the camera to it.
+     *
+     * @param placeType place type {from, to} YOU CAN SET IT TO NULL if you do not need it
+     */
+    private void getDeviceLocation(String placeType) {
         Log.d(TAG, "getDeviceLocation: getting the device's current location");
 
+        if (placeType == null)
+            placeType = "";
+
+        placeType = placeType.toLowerCase();
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (mLocationPermissionGranted) {
 
-            try {
-                Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
+            switch (placeType) {
+                case "from":
+                case "":
+                default:
 
-                            Log.d(TAG, "onComplete: found location");
-                            Location currentLocation = (Location) task.getResult();
-                            LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    try {
+                        Task location = mFusedLocationProviderClient.getLastLocation();
+                        location.addOnCompleteListener(new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                if (task.isSuccessful() && task.getResult() != null) {
 
-                            mMap.addMarker(new MarkerOptions().position(current).title("MyLocation"));
-                            moveCamera(current, DEFAULT_ZOOM, "MyLocation");
+                                    Log.d(TAG, "onComplete: found location");
+                                    Location currentLocation = (Location) task.getResult();
+                                    LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-                        } else {
-                            Log.d(TAG, "onComplete: current location is null");
-                            Toast.makeText(mContext, "unable to get current location", Toast.LENGTH_SHORT).show();
-                        }
+                                    /**/
+                                    origin = current;
+                                    /**/
+
+                                    moveCamera(current, DEFAULT_ZOOM, "My Location", true);
+
+                                } else {
+                                    Log.d(TAG, "onComplete: current location is null");
+                                    Toast.makeText(mContext, "unable to get current location", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } catch (SecurityException e) {
+                        Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
                     }
-                });
-            } catch (SecurityException e) {
-                Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
+
+                    break;
+
+                case "to":
+
+                    try {
+                        Task location = mFusedLocationProviderClient.getLastLocation();
+                        location.addOnCompleteListener(new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                if (task.isSuccessful() && task.getResult() != null) {
+
+                                    Log.d(TAG, "onComplete: found location");
+                                    Location currentLocation = (Location) task.getResult();
+                                    LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+                                    /**/
+                                    destination = current;
+                                    /**/
+
+                                    MarkerOptions options = new MarkerOptions()
+                                            .position(current)
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                            .title("My Location");
+
+                                    if (mMap != null) {
+
+                                        mMap.addMarker(options);
+
+                                    }
+
+                                } else {
+                                    Log.d(TAG, "onComplete: current location is null");
+                                    Toast.makeText(mContext, "unable to get current location", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } catch (SecurityException e) {
+                        Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
+                    }
+
+                    break;
+
             }
+
         }
 
     }
 
+    /**
+     * Gets the place latlng and sets a marker for it on the map an moves the camera to it
+     *
+     * @param placeId   place ID
+     * @param placeType place type {from , to}
+     */
+    private void getPlaceLocation(String placeId, String placeType) {
 
-    private void moveCamera(LatLng latlng, float zoom, String title) {
+        Log.d(TAG, "getPlaceLocation: getting the location...");
+
+        if (placeId == null)
+            return;
+
+        placeType = placeType.toLowerCase();
+
+        switch (placeType) {
+            case "from":
+
+                mGeoDataClient.getPlaceById(placeId)
+                        .addOnSuccessListener(new OnSuccessListener<PlaceBufferResponse>() {
+                            @Override
+                            public void onSuccess(PlaceBufferResponse places) {
+
+                                Place place = places.get(0);
+
+                                MarkerOptions options = new MarkerOptions()
+                                        .position(place.getLatLng())
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                        .title(place.getName().toString());
+
+                                /**/
+                                origin = place.getLatLng();
+                                /**/
+
+                                if (mMap != null) {
+                                    mMap.clear();
+
+                                    mMap.addMarker(options);
+
+                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
+                                }
+
+                                // releasing the buffer to avoid memory leaaaaaks
+                                places.release();
+                            }
+                        });
+
+                break;
+
+            case "to":
+
+                mGeoDataClient.getPlaceById(placeId)
+                        .addOnSuccessListener(new OnSuccessListener<PlaceBufferResponse>() {
+                            @Override
+                            public void onSuccess(PlaceBufferResponse places) {
+
+                                Place place = places.get(0);
+
+                                MarkerOptions options = new MarkerOptions()
+                                        .position(place.getLatLng())
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                        .title(place.getName().toString());
+
+
+                                /**/
+                                destination = place.getLatLng();
+                                /**/
+
+                                mMap.addMarker(options);
+
+                                // releasing the buffer to avoid memory leaaaaaks
+                                places.release();
+                            }
+                        });
+                break;
+
+            default:
+
+                break;
+        }
+
+
+    }
+
+    /**
+     * moves the camera to a specific location on map and sets a marker
+     */
+    private void moveCamera(LatLng latlng, float zoom, String title, boolean clear) {
         Log.d(TAG, "moveCamera: moving the camera to lat: " + latlng.latitude + ", lng: " + latlng.longitude);
 
         // clear previous markers
-        mMap.clear();
+        if (clear)
+            mMap.clear();
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoom));
 
-        if (!title.equals("My Location")) {
-            MarkerOptions options = new MarkerOptions()
-                    .position(latlng)
-                    .title(title);
+//        if (!title.equals("My Location")) {
+        MarkerOptions options = new MarkerOptions()
+                .position(latlng)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .title(title);
 
-            mMap.addMarker(options);
+        mMap.addMarker(options);
 
-        }
+//        }
 
     }
-
-
 
 
     /******************** LAYOUT ********************/
 
+    /**
+     * sets up all activity widgets
+     */
     private void setupWidgets() {
         mContext = MainActivity.this;
 
@@ -246,24 +417,56 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchFrom = findViewById(R.id.searchFrom);
         searchTo = findViewById(R.id.searchTo);
 
-        if (getIntent().hasExtra("SEARCH_FROM") && getIntent().getStringExtra("SEARCH_FROM").length() > 0) {
-            Log.d(TAG, "setupWidgets: haaaaaaaaas");
-            searchFrom.setText(getIntent().getStringExtra("SEARCH_FROM"));
+        // User has specified the starting point.
+        if (getIntent().hasExtra("PLACE_FROM") && getIntent().getStringExtra("PLACE_FROM").length() > 0) {
 
-        } else {
-            Log.d(TAG, "setupWidgets: nooooooooot : " + getIntent().hasExtra("SEARCH_FROM"));
+            searchFrom.setText(getIntent().getStringExtra("PLACE_FROM"));
+
+            // if user set the starting location to his current location
+            if (getIntent().getStringExtra("PLACE_FROM").equals("My Location")) {
+
+                getDeviceLocation("From");
+
+            } else { // if the user set the starting location to any where other than his location
+
+                String placeId = getIntent().getStringExtra("PLACE_FROM_ID");
+
+                getPlaceLocation(placeId, "From");
+
+            }
+
+        } else { // user has not specified the starting point
+
+            // set the starting point to the user's current location.
             searchFrom.setText("My Location");
+            getDeviceLocation("From");
         }
 
-        if (getIntent().hasExtra("SEARCH_TO") && getIntent().getStringExtra("SEARCH_TO").length() > 0) {
-            Log.d(TAG, "setupWidgets: haaaaaaaaas");
-            searchTo.setText(getIntent().getStringExtra("SEARCH_TO"));
+        // User has specified the destination.
+        if (getIntent().hasExtra("PLACE_TO") && getIntent().getStringExtra("PLACE_TO").length() > 0) {
 
-        } else {
-            Log.d(TAG, "setupWidgets: nooooooooot");
+            searchTo.setText(getIntent().getStringExtra("PLACE_TO"));
+
+            // if user set the destination to his current location
+            if (getIntent().getStringExtra("PLACE_TO").equals("My Location")) {
+
+                getDeviceLocation("To");
+
+
+            } else { // if the user set the destination to any where other than his location
+
+                String placeId = getIntent().getStringExtra("PLACE_TO_ID");
+
+                getPlaceLocation(placeId, "To");
+
+            }
+        } else { // User has not set the destination
+
             searchTo.setText("Set up the destination");
         }
 
+
+        // navigate the user to the SearchPlaceActivity
         searchPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,6 +483,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    /**
+     * sets up the NavigationView
+     */
     private void setUpNavigationView() {
 
         // Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
