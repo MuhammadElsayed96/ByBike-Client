@@ -102,6 +102,64 @@
 
         </RelativeLayout>
 
+
+        <RelativeLayout
+            android:id="@+id/submit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white">
+
+            <Spinner
+                android:id="@+id/spinnerTransportation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+            </Spinner>
+
+            <LinearLayout
+                android:id="@+id/divider2"
+                android:orientation="horizontal"
+                android:background="#DDD"
+                android:layout_below="@+id/spinnerTransportation"
+                android:layout_width="match_parent"
+                android:layout_height="1dp">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/divider2"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+                <Button
+                    android:id="@+id/btnSubmit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Submit"
+                    android:layout_weight="1"
+                    android:background="@color/background_color"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"/>
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/background_color"
+                    android:text="Cancel"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

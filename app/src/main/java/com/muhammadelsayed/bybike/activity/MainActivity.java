@@ -19,10 +19,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -37,7 +46,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,24 +56,28 @@ import com.google.android.gms.tasks.Task;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
+import com.google.maps.StaticMapsRequest;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.model.Transportation;
+import com.muhammadelsayed.bybike.activity.utils.CustomSpinnerAdapter;
+import com.muhammadelsayed.bybike.activity.utils.CustomToast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, RoutingListener {
 
     private static final String TAG = "MainActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final float DEFAULT_ZOOM = 17f;
-    private static final LatLngBounds LAT_LNG_BOUNDS =
-            new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
+
 
     // REQUEST_CODES
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -77,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Context mContext;
 
+    private List<Transportation> transportations = Arrays.asList(new Transportation(), new Transportation(), new Transportation());
+
 
     private static LatLng origin = null;
     private static LatLng destination = null;
@@ -87,19 +104,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private Spinner spinnerTransportation;
+    private RelativeLayout submitLayout;
+    private CustomSpinnerAdapter spinnerAdapter;
+    private Button submitTrans;
+    private Button cancelTrans;
+
+
+    // for getting the route
+    private List<Polyline> polylines;
+    private static final int[] COLORS = new int[]{R.color.colorPrimary, R.color.error};
+
+
+    private ArrayList<Marker> markersList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (savedInstanceState != null) {
+            origin = savedInstanceState.getParcelable("origin");
+            destination = savedInstanceState.getParcelable("destination");
+        }
+
+
+        polylines = new ArrayList<>();
 
         getLocationPermission();
 
         getDeviceLocation(null);
-
 
     }
 
@@ -113,22 +147,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        if (mMap == null){
+            mMap = googleMap;
 
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(this);
+            // Construct a GeoDataClient.
+            mGeoDataClient = Places.getGeoDataClient(this);
 
-        // Construct a PlaceDetectionClient.
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
+            // Construct a PlaceDetectionClient.
+            mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
 
-        // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            // Construct a FusedLocationProviderClient.
+            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // initializing activity widgets
-        setupWidgets();
+            // initializing activity widgets
+            setupWidgets();
 
-        // initializing navigation view
-        setUpNavigationView();
+            // initializing navigation view
+            setUpNavigationView();
+        }
     }
 
     /**
@@ -233,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     origin = current;
                                     /**/
 
-                                    moveCamera(current, DEFAULT_ZOOM, "My Location", true);
+                                    drawRoute(origin, destination);
 
                                 } else {
                                     Log.d(TAG, "onComplete: current location is null");
@@ -264,16 +300,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     destination = current;
                                     /**/
 
-                                    MarkerOptions options = new MarkerOptions()
-                                            .position(current)
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                                            .title("My Location");
+                                    drawRoute(origin, destination);
 
-                                    if (mMap != null) {
+                                    Log.d(TAG, "onComplete: markersList = " + markersList.size());
 
-                                        mMap.addMarker(options);
+                                    Log.d(TAG, "22222 # onComplete: ORIGIN === " + origin + "\n DESTINATION === " + destination);
 
-                                    }
 
                                 } else {
                                     Log.d(TAG, "onComplete: current location is null");
@@ -295,7 +327,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * Gets the place latlng and sets a marker for it on the map an moves the camera to it
-     *
      * @param placeId   place ID
      * @param placeType place type {from , to}
      */
@@ -305,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (placeId == null)
             return;
+
 
         placeType = placeType.toLowerCase();
 
@@ -318,22 +350,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 Place place = places.get(0);
 
-                                MarkerOptions options = new MarkerOptions()
-                                        .position(place.getLatLng())
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                                        .title(place.getName().toString());
-
                                 /**/
                                 origin = place.getLatLng();
                                 /**/
 
-                                if (mMap != null) {
-                                    mMap.clear();
-
-                                    mMap.addMarker(options);
-
-                                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
-                                }
+                                drawRoute(origin, destination);
 
                                 // releasing the buffer to avoid memory leaaaaaks
                                 places.release();
@@ -351,17 +372,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 Place place = places.get(0);
 
-                                MarkerOptions options = new MarkerOptions()
-                                        .position(place.getLatLng())
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                                        .title(place.getName().toString());
-
-
                                 /**/
                                 destination = place.getLatLng();
                                 /**/
 
-                                mMap.addMarker(options);
+                                drawRoute(origin, destination);
+
+                                Log.d(TAG, "onRoutingFailure: ORIGIN === " + origin + "\nDESTINTAION === " + destination);
+
 
                                 // releasing the buffer to avoid memory leaaaaaks
                                 places.release();
@@ -377,27 +395,146 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
+    /******************** Routing ********************/
+
     /**
-     * moves the camera to a specific location on map and sets a marker
+     * draws shortest route between two points,
+     * showing all the alternative routes
+     * @param origin the location from which the trip will start
+     * @param destination the location where the trip ends
      */
-    private void moveCamera(LatLng latlng, float zoom, String title, boolean clear) {
-        Log.d(TAG, "moveCamera: moving the camera to lat: " + latlng.latitude + ", lng: " + latlng.longitude);
+    private void drawRoute(LatLng origin, LatLng destination) {
 
-        // clear previous markers
-        if (clear)
-            mMap.clear();
+        mMap.clear();
+        markersList.clear();
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoom));
+        if (origin != null) {
 
-//        if (!title.equals("My Location")) {
-        MarkerOptions options = new MarkerOptions()
-                .position(latlng)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                .title(title);
+            MarkerOptions originOptions = new MarkerOptions()
+                    .position(origin)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .title("Start");
 
-        mMap.addMarker(options);
+            markersList.add(mMap.addMarker(originOptions));
 
-//        }
+        }
+
+        if (destination != null) {
+
+            MarkerOptions destOptions = new MarkerOptions()
+                    .position(destination)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    .title("End");
+
+            markersList.add(mMap.addMarker(destOptions));
+
+        }
+
+        if (origin != null && destination == null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, DEFAULT_ZOOM));
+        } else if (origin != null) {
+
+            // controlling the camera position in a way that show both markers
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (Marker m : markersList) {
+                builder.include(m.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (width * 0.12);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, (height / 2), padding));
+
+            // getting the route
+            Routing routing = new Routing.Builder()
+                    .travelMode(AbstractRouting.TravelMode.DRIVING)
+                    .withListener(this)
+                    .alternativeRoutes(false)
+                    .waypoints(origin, destination)
+                    .build();
+
+            routing.execute();
+
+        }
+
+    }
+
+
+    /**
+     * removes all routes from map
+     */
+    private void ereasePolylines() {
+
+        for (Polyline line : polylines) {
+            line.remove();
+        }
+        polylines.clear();
+
+    }
+
+    @Override
+    public void onRoutingFailure(RouteException e) {
+
+        if (e != null) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d(TAG, "onRoutingFailure: Error: " + e.getMessage());
+        } else {
+            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onRoutingStart() {
+
+    }
+
+    @Override
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+
+
+        if(polylines.size()>0) {
+            for (Polyline poly : polylines) {
+                poly.remove();
+            }
+        }
+
+        String distance = "", duration = "";
+
+        polylines = new ArrayList<>();
+        //add route(s) to the map.
+        for (int i = 0; i < route.size(); i++) {
+
+            //In case of more than 5 alternative routes
+            int colorIndex = i % COLORS.length;
+
+            PolylineOptions polyOptions = new PolylineOptions();
+            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+            polyOptions.width(10 + i * 3);
+            polyOptions.addAll(route.get(i).getPoints());
+            Polyline polyline = mMap.addPolyline(polyOptions);
+            polylines.add(polyline);
+
+
+            distance = route.get(0).getDistanceText();
+            duration = route.get(0).getDurationText();
+
+
+        }
+
+        for (int i = 0; i < transportations.size(); i++) {
+            transportations.get(i).setTransDistance(distance + " - " + duration);
+        }
+
+        showSubmitLayout();
+
+
+    }
+
+    @Override
+    public void onRoutingCancelled() {
 
     }
 
@@ -410,12 +547,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupWidgets() {
         mContext = MainActivity.this;
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
         searchPlace = findViewById(R.id.search_layout);
         searchFrom = findViewById(R.id.searchFrom);
         searchTo = findViewById(R.id.searchTo);
+
+        submitLayout = findViewById(R.id.submit_layout);
+        submitLayout.setVisibility(View.GONE);
+        spinnerTransportation = findViewById(R.id.spinnerTransportation);
+
+        submitTrans = findViewById(R.id.btnSubmit);
+        cancelTrans = findViewById(R.id.btnCancel);
+
 
         // User has specified the starting point.
         if (getIntent().hasExtra("PLACE_FROM") && getIntent().getStringExtra("PLACE_FROM").length() > 0) {
@@ -463,6 +611,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else { // User has not set the destination
 
             searchTo.setText("Set up the destination");
+            destination = null;
         }
 
 
@@ -476,10 +625,88 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (!searchTo.getText().equals("Set up the destination")) {
                     intent.putExtra("SEARCH_TO", searchTo.getText());
                 }
-
                 startActivity(intent);
             }
         });
+
+    }
+
+
+    /**
+     * shows the layout to allow the user to submit or cancel the order he made
+     */
+    private void showSubmitLayout() {
+
+        for (int i = 0; i < transportations.size(); i++) {
+            transportations.get(i).setTransType("Bicycle");
+            transportations.get(i).setTransImg(R.drawable.ic_bike);
+            transportations.get(i).setTransCost("12 L.E.");
+        }
+
+
+        submitLayout.setVisibility(View.VISIBLE);
+
+        spinnerAdapter = new CustomSpinnerAdapter(mContext, R.layout.custom_spinner_transprotaiton, transportations);
+
+        spinnerTransportation.setAdapter(spinnerAdapter);
+
+        final Transportation order = new Transportation();
+
+        spinnerTransportation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                order.setTransCost(transportations.get(position).getTransCost());
+                order.setTransImg(transportations.get(position).getTransImg());
+                order.setTransType(transportations.get(position).getTransType());
+                order.setTransDistance(transportations.get(position).getTransDistance());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        submitTrans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(mContext, ConfirmOrderActivity.class);
+
+                intent.putExtra("placeFrom", searchFrom.getText());
+                intent.putExtra("placeTo", searchTo.getText());
+                intent.putExtra("totalCost", order.getTransCost());
+
+                startActivity(intent);
+
+            }
+        });
+
+        cancelTrans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetActivity();
+            }
+        });
+    }
+
+
+    /**
+     * resets everything to its default
+     */
+    private void resetActivity() {
+
+        submitLayout.setVisibility(View.GONE);
+        ereasePolylines();
+        mMap.clear();
+        destination = null;
+        origin = null;
+        searchFrom.setText("My Location");
+        searchTo.setText("Set up the destination");
+        getDeviceLocation(null);
+        drawRoute(origin, destination);
 
     }
 
@@ -519,6 +746,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         toggle.syncState();
 
 
+    }
+
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mMap != null) {
+            outState.putParcelable("destination", destination);
+            outState.putParcelable("origin", origin);
+            super.onSaveInstanceState(outState);
+        }
     }
 
 

@@ -58,7 +58,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
     private Toolbar toolbar;
     public static SearchView searchFrom, searchTo;
     private ListView resultsList;
-    private LinearLayout locaionControls, myLocation, chooseLocation;
+    private LinearLayout locationControls, myLocation, chooseLocation;
 
     final ArrayList<Map<String,String>> itemDataList = new ArrayList<Map<String,String>>();
 
@@ -101,7 +101,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
                     simpleAdapterListView(placesFrom);
 
-                    locaionControls.setVisibility(View.VISIBLE);
+                    locationControls.setVisibility(View.VISIBLE);
 
                     myLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -136,13 +136,12 @@ public class PlaceSearchActivity extends AppCompatActivity {
                                         }
                                     });
 
-
                         }
                     });
 
                 } else {
 
-                    locaionControls.setVisibility(View.GONE);
+                    locationControls.setVisibility(View.GONE);
                     simpleAdapterListView(new ArrayList<PlaceModel>());
                 }
             }
@@ -212,7 +211,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
                     simpleAdapterListView(placesTo);
 
                     // show the Location Controls {My Location, Set location on map}
-                    locaionControls.setVisibility(View.VISIBLE);
+                    locationControls.setVisibility(View.VISIBLE);
 
                     myLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -256,12 +255,13 @@ public class PlaceSearchActivity extends AppCompatActivity {
                                         }
                                     });
 
+
                         }
                     });
 
                 } else {
 
-                    locaionControls.setVisibility(View.GONE);
+                    locationControls.setVisibility(View.GONE);
                     simpleAdapterListView(new ArrayList<PlaceModel>());
                 }
             }
@@ -338,18 +338,25 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
                 Log.d(TAG, "onBackPressed: searchTo.getQuery() ==== " + searchTo.getQuery().toString());
 
-                if (placeTo != null || searchFrom.getQuery().toString().equals("My Location")) {
-                    intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
-                    if (placeTo != null) {
 
+                if (searchTo.getQuery().toString().equals("My Location")) {
+                    intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
+
+                } else {
+
+                    if (!searchTo.getQuery().toString().equals("") && placesTo != null) {
+
+                        intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
                         intent.putExtra("PLACE_TO_ID", placeTo.getId());
                         Log.d(TAG, "onBackPressed: PLACE TO ==== " + placeTo.getName());
 
                     }
+
                 }
 
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+
                 return true;
 
             default:
@@ -374,17 +381,24 @@ public class PlaceSearchActivity extends AppCompatActivity {
         }
 
 
+
         Log.d(TAG, "onBackPressed: searchTo.getQuery() ==== " + searchTo.getQuery().toString());
 
-        if (placeTo != null || searchFrom.getQuery().toString().equals("My Location")) {
+        if (searchTo.getQuery().toString().equals("My Location")) {
             intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
-            if (placeTo != null) {
 
+        } else {
+
+            if (!searchTo.getQuery().toString().equals("") && placesTo != null) {
+
+                intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
                 intent.putExtra("PLACE_TO_ID", placeTo.getId());
                 Log.d(TAG, "onBackPressed: PLACE TO ==== " + placeTo.getName());
 
             }
+
         }
+
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -397,15 +411,16 @@ public class PlaceSearchActivity extends AppCompatActivity {
     private void setupWidgets() {
         mContext = getApplicationContext();
 
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Select locations");
 
         resultsList = findViewById(R.id.listview_place_result);
 
-        locaionControls = findViewById(R.id.layout_location_controls);
-        locaionControls.setVisibility(View.GONE);
+        locationControls = findViewById(R.id.layout_location_controls);
+        locationControls.setVisibility(View.GONE);
         myLocation = findViewById(R.id.myLocation);
         chooseLocation = findViewById(R.id.chooseLocation);
 
@@ -416,4 +431,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
         searchTo.setQuery(getIntent().getStringExtra("SEARCH_TO"), false);
 
     }
+
+
+
 }
