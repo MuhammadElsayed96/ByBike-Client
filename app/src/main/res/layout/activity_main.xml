@@ -9,26 +9,29 @@
     tools:openDrawer="start">
 
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".activity.MainActivity" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".activity.MainActivity" />
+
         <include
+            android:id="@+id/app_bar"
             layout="@layout/app_bar_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:id="@+id/search_layout"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/app_bar"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
             android:background="@drawable/greenish_border"
@@ -98,12 +101,66 @@
             </LinearLayout>
 
         </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/submit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white">
+
+            <Spinner
+                android:id="@+id/spinnerTransportation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+            </Spinner>
+
+            <LinearLayout
+                android:id="@+id/divider2"
+                android:orientation="horizontal"
+                android:background="#DDD"
+                android:layout_below="@+id/spinnerTransportation"
+                android:layout_width="match_parent"
+                android:layout_height="1dp">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/divider2"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp">
+                <Button
+                    android:id="@+id/btnSubmit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Submit"
+                    android:layout_weight="1"
+                    android:background="@color/background_color"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"/>
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/background_color"
+                    android:text="Cancel"
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </RelativeLayout>
-
-
-
-
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
