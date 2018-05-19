@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBufferResponse;
@@ -22,6 +24,7 @@ import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,6 +45,8 @@ public class PlaceSearchActivity extends AppCompatActivity {
     private static final AutocompleteFilter mPlaceFilter = new AutocompleteFilter.Builder()
             .setCountry("EG")
             .build();
+    private static final int FROM_PLACE_PICKER_REQUEST = 1;
+    private static final int TO_PLACE_PICKER_REQUEST = 2;
 
     // vars
     private GeoDataClient mGeoDataClient;
@@ -63,7 +68,11 @@ public class PlaceSearchActivity extends AppCompatActivity {
     final ArrayList<Map<String,String>> itemDataList = new ArrayList<Map<String,String>>();
 
 
-    // This method use SimpleAdapter to show search results in the ListView.
+
+    /**
+     * Uses simple adapter to show the search results in the ListView
+     * @param places a List of all the search result
+     */
     private void simpleAdapterListView(final List<PlaceModel> places) {
 
 
@@ -97,6 +106,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
         searchFrom.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+
                 if (hasFocus) {
 
                     simpleAdapterListView(placesFrom);
@@ -115,7 +125,12 @@ public class PlaceSearchActivity extends AppCompatActivity {
                     chooseLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
+
+                            setupPlacePicker("From");
+                            searchFrom.clearFocus();
+
+
                         }
                     });
 
@@ -131,8 +146,10 @@ public class PlaceSearchActivity extends AppCompatActivity {
                                         public void onSuccess(PlaceBufferResponse places) {
                                             placeFrom = places.get(0);
                                             Log.d(TAG, "onSuccess: placeFrom == " + placeFrom);
-                                            if (placesFrom.size() > 0)
+                                            if (placesFrom.size() > 0){
                                                 searchFrom.setQuery(placesFrom.get(index).getPrimaryText(), true);
+//                                                searchFrom.clearFocus();
+                                            }
                                         }
                                     });
 
@@ -156,6 +173,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 
+                placeFrom = null;
                 placesFrom.clear();
                 Task<AutocompletePredictionBufferResponse> results =
                         mGeoDataClient.getAutocompletePredictions(newText, LAT_LNG_BOUNDS,
@@ -226,7 +244,11 @@ public class PlaceSearchActivity extends AppCompatActivity {
                     chooseLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
+
+                            setupPlacePicker("To");
+                            searchTo.clearFocus();
+
                         }
                     });
 
@@ -248,9 +270,10 @@ public class PlaceSearchActivity extends AppCompatActivity {
                                             placeTo = places.get(0);
                                             Log.d(TAG, "onSuccess: placeFrom == " + placesTo);
 
-                                            if (placesTo.size() > 0)
+                                            if (placesTo.size() > 0) {
                                                 searchTo.setQuery(placesTo.get(index).getPrimaryText(), true);
-
+//                                                searchTo.clearFocus();
+                                            }
                                             Log.d(TAG, "onSuccess: searchTo.getQuery() ==== " + searchTo.getQuery());
                                         }
                                     });
@@ -276,6 +299,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 
+                placeTo = null;
                 placesTo.clear();
                 Task<AutocompletePredictionBufferResponse> results =
                         mGeoDataClient.getAutocompletePredictions(newText, LAT_LNG_BOUNDS,
@@ -320,6 +344,68 @@ public class PlaceSearchActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * launches the google place picker allowing the user to select the location from the map
+     * @param placeType place type {from , to}
+     */
+    private void setupPlacePicker(String placeType) {
+        placeType = placeType.toLowerCase();
+
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        switch (placeType) {
+            case "from":
+                try {
+
+                    startActivityForResult(builder.build(this), FROM_PLACE_PICKER_REQUEST);
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+
+                break;
+
+            case "to":
+                try {
+
+                    startActivityForResult(builder.build(this), TO_PLACE_PICKER_REQUEST);
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+
+                break;
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == FROM_PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                Place place = PlacePicker.getPlace(mContext, data);
+                searchFrom.setQuery(place.getName(), true);
+                placeFrom = place;
+
+            }
+        } else if (requestCode == TO_PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(mContext, data);
+                searchTo.setQuery(place.getName(), true);
+                placeTo = place;
+            }
+        }
+
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
@@ -344,7 +430,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
                 } else {
 
-                    if (!searchTo.getQuery().toString().equals("") && placesTo != null) {
+                    if (!searchTo.getQuery().toString().equals("") && placeTo != null) {
 
                         intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
                         intent.putExtra("PLACE_TO_ID", placeTo.getId());
@@ -389,7 +475,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
         } else {
 
-            if (!searchTo.getQuery().toString().equals("") && placesTo != null) {
+            if (!searchTo.getQuery().toString().equals("") && placeTo != null) {
 
                 intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
                 intent.putExtra("PLACE_TO_ID", placeTo.getId());
@@ -408,6 +494,10 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
 
     /********************** LAYOUT **********************/
+
+    /**
+     * sets up all the activity widgets
+     */
     private void setupWidgets() {
         mContext = getApplicationContext();
 
