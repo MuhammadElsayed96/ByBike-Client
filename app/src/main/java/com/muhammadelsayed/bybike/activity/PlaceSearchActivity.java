@@ -125,7 +125,6 @@ public class PlaceSearchActivity extends AppCompatActivity {
                     chooseLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
 
                             setupPlacePicker("From");
                             searchFrom.clearFocus();
@@ -148,8 +147,9 @@ public class PlaceSearchActivity extends AppCompatActivity {
                                             Log.d(TAG, "onSuccess: placeFrom == " + placeFrom);
                                             if (placesFrom.size() > 0){
                                                 searchFrom.setQuery(placesFrom.get(index).getPrimaryText(), true);
-//                                                searchFrom.clearFocus();
                                             }
+
+                                            places.release();
                                         }
                                     });
 
@@ -173,7 +173,6 @@ public class PlaceSearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                placeFrom = null;
                 placesFrom.clear();
                 Task<AutocompletePredictionBufferResponse> results =
                         mGeoDataClient.getAutocompletePredictions(newText, LAT_LNG_BOUNDS,
@@ -244,7 +243,6 @@ public class PlaceSearchActivity extends AppCompatActivity {
                     chooseLocation.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                            Toast.makeText(PlaceSearchActivity.this, "Not Implemented Yet !!", Toast.LENGTH_SHORT).show();
 
                             setupPlacePicker("To");
                             searchTo.clearFocus();
@@ -272,8 +270,10 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
                                             if (placesTo.size() > 0) {
                                                 searchTo.setQuery(placesTo.get(index).getPrimaryText(), true);
-//                                                searchTo.clearFocus();
                                             }
+
+                                            places.release();
+
                                             Log.d(TAG, "onSuccess: searchTo.getQuery() ==== " + searchTo.getQuery());
                                         }
                                     });
@@ -299,7 +299,6 @@ public class PlaceSearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                placeTo = null;
                 placesTo.clear();
                 Task<AutocompletePredictionBufferResponse> results =
                         mGeoDataClient.getAutocompletePredictions(newText, LAT_LNG_BOUNDS,
@@ -391,14 +390,14 @@ public class PlaceSearchActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 Place place = PlacePicker.getPlace(mContext, data);
-                searchFrom.setQuery(place.getName(), true);
+                searchFrom.setQuery(place.getAddress(), true);
                 placeFrom = place;
 
             }
         } else if (requestCode == TO_PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(mContext, data);
-                searchTo.setQuery(place.getName(), true);
+                searchTo.setQuery(place.getAddress(), true);
                 placeTo = place;
             }
         }
@@ -411,43 +410,9 @@ public class PlaceSearchActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
-                Intent intent = new Intent(this, MainActivity.class);
-
-                if (placeFrom != null || searchFrom.getQuery().toString().equals("My Location")) {
-                    intent.putExtra("PLACE_FROM", searchFrom.getQuery().toString());
-
-                    if (placeFrom != null) {
-                        intent.putExtra("PLACE_FROM_ID", placeFrom.getId());
-                    }
-                }
-
-
-                Log.d(TAG, "onBackPressed: searchTo.getQuery() ==== " + searchTo.getQuery().toString());
-
-
-                if (searchTo.getQuery().toString().equals("My Location")) {
-                    intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
-
-                } else {
-
-                    if (!searchTo.getQuery().toString().equals("") && placeTo != null) {
-
-                        intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
-                        intent.putExtra("PLACE_TO_ID", placeTo.getId());
-                        Log.d(TAG, "onBackPressed: PLACE TO ==== " + placeTo.getName());
-
-                    }
-
-                }
-
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+                onBackPressed();
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -467,9 +432,6 @@ public class PlaceSearchActivity extends AppCompatActivity {
         }
 
 
-
-        Log.d(TAG, "onBackPressed: searchTo.getQuery() ==== " + searchTo.getQuery().toString());
-
         if (searchTo.getQuery().toString().equals("My Location")) {
             intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
 
@@ -479,19 +441,16 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
                 intent.putExtra("PLACE_TO", searchTo.getQuery().toString());
                 intent.putExtra("PLACE_TO_ID", placeTo.getId());
-                Log.d(TAG, "onBackPressed: PLACE TO ==== " + placeTo.getName());
 
             }
 
         }
-
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         super.onBackPressed();
 
     }
-
 
     /********************** LAYOUT **********************/
 
@@ -500,7 +459,6 @@ public class PlaceSearchActivity extends AppCompatActivity {
      */
     private void setupWidgets() {
         mContext = getApplicationContext();
-
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -153,19 +153,26 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         @Override
                         public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
 
-                            User currentUser = response.body().getUser();
+                            if (response.body() != null) {
+                                User currentUser = response.body().getUser();
 
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            intent.putExtra("user", currentUser);
-                            startActivity(intent);
+                                Intent intent = new Intent(getActivity(), MainActivity.class);
+                                intent.putExtra("user", currentUser);
+                                startActivity(intent);
 
-                            SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-                            prefEditor.putString("USER_TOKEN", response.body().getToken());
-                            prefEditor.apply();
+                                SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                                prefEditor.putString("USER_TOKEN", response.body().getToken());
+                                prefEditor.apply();
 
+                                getActivity().finish();
+
+                            } else {
+
+                                Toast.makeText(getActivity(), "I have no Idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
+
+                            }
 
                             progressDialog.dismiss();
-                            getActivity().finish();
                         }
 
                         @Override

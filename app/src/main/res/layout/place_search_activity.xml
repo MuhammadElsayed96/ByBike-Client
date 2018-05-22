@@ -9,14 +9,14 @@
         android:id="@+id/app_bar"
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="100dp"/>
+        android:layout_height="wrap_content"/>
 
 
     <android.support.v7.widget.SearchView
-        android:layout_below="@+id/app_bar"
         android:id="@+id/search_from"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         app:queryHint="From"
         app:iconifiedByDefault="false"
         android:focusable="false"
@@ -24,7 +24,6 @@
 
     </android.support.v7.widget.SearchView>
     <android.support.v7.widget.SearchView
-        android:layout_below="@+id/search_from"
         android:id="@+id/search_to"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +38,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/search_to"
         android:visibility="visible">
         <LinearLayout
             android:id="@+id/myLocation"
