@@ -439,7 +439,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     /**
      * removes all routes from map
      */
@@ -710,11 +709,15 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void showSubmitLayout() {
 
-        for (int i = 0; i < transportations.size(); i++) {
-            transportations.get(i).setTransType("Bicycle");
-            transportations.get(i).setTransImg(R.drawable.ic_bike);
-            transportations.get(i).setTransCost("12 L.E.");
-        }
+        transportations.get(0).setTransType("Bicycle");
+        transportations.get(1).setTransType("Motorcycle");
+        transportations.get(2).setTransType("Car");
+        transportations.get(0).setTransImg(R.drawable.ic_bike);
+        transportations.get(1).setTransImg(R.drawable.ic_motorcycle);
+        transportations.get(2).setTransImg(R.drawable.ic_car);
+        transportations.get(0).setTransCost("12 L.E.");
+        transportations.get(1).setTransCost("18 L.E.");
+        transportations.get(2).setTransCost("25 L.E.");
 
         submitLayout.setVisibility(View.VISIBLE);
 
@@ -736,9 +739,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         submitTrans.setOnClickListener(new View.OnClickListener() {
@@ -763,7 +764,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
-
 
     /**
      * resets everything to its default
