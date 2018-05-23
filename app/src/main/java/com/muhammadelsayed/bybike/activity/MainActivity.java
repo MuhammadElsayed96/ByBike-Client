@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -135,12 +136,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null) {
-            origin = savedInstanceState.getParcelable("origin");
-            destination = savedInstanceState.getParcelable("destination");
-        }
-
-
         polylines = new ArrayList<>();
 
         getLocationPermission();
@@ -186,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(MainActivity.this);
-
     }
 
     /**
@@ -199,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements
                 COARSE_LOCATION
         };
 
-        // getApplicationContext() <---> this.getApplicationContext()
         if (ContextCompat.checkSelfPermission(getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
@@ -207,11 +200,9 @@ public class MainActivity extends AppCompatActivity implements
 
             } else {
                 ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
-
             }
         } else {
             ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
-
         }
     }
 
@@ -238,98 +229,78 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
         }
-
     }
 
 
     /**
      * gets the device's current location and move the camera to it.
-     *
      * @param placeType place type {from, to} YOU CAN SET IT TO NULL if you do not need it
      */
     private void getDeviceLocation(String placeType) {
         Log.d(TAG, "getDeviceLocation: getting the device's current location");
 
-        if (placeType == null)
-            placeType = "";
-
-        placeType = placeType.toLowerCase();
-
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        if (mLocationPermissionGranted) {
+        if (placeType == null)
+            placeType = "";
+        placeType = placeType.toLowerCase();
 
+        if (mLocationPermissionGranted) {
             switch (placeType) {
                 case "from":
                 case "":
                 default:
-
                     try {
                         Task location = mFusedLocationProviderClient.getLastLocation();
                         location.addOnCompleteListener(new OnCompleteListener() {
                             @Override
                             public void onComplete(@NonNull Task task) {
                                 if (task.isSuccessful() && task.getResult() != null) {
-
                                     Log.d(TAG, "onComplete: found location");
+
                                     Location currentLocation = (Location) task.getResult();
                                     LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-                                    /**/
                                     origin = current;
-                                    /**/
 
                                     drawRoute(origin, destination);
 
                                 } else {
                                     Log.d(TAG, "onComplete: current location is null");
-
 
                                     mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                                     if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
                                         mEnableGps();
                                     }
-
                                 }
                             }
                         });
                     } catch (SecurityException e) {
                         Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
                     }
-
                     break;
 
                 case "to":
-
                     try {
                         Task location = mFusedLocationProviderClient.getLastLocation();
                         location.addOnCompleteListener(new OnCompleteListener() {
                             @Override
                             public void onComplete(@NonNull Task task) {
                                 if (task.isSuccessful() && task.getResult() != null) {
-
                                     Log.d(TAG, "onComplete: found location");
+
                                     Location currentLocation = (Location) task.getResult();
                                     LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-                                    /**/
                                     destination = current;
-                                    /**/
 
                                     drawRoute(origin, destination);
 
-                                    Log.d(TAG, "onComplete: markersList = " + markersList.size());
-
-                                    Log.d(TAG, "22222 # onComplete: ORIGIN === " + origin + "\n DESTINATION === " + destination);
-
-
                                 } else {
                                     Log.d(TAG, "onComplete: current location is null");
-
                                     mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                                     if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                                        mEnableGps();
+                                       mEnableGps();
                                     }
 
                                 }
@@ -338,13 +309,9 @@ public class MainActivity extends AppCompatActivity implements
                     } catch (SecurityException e) {
                         Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
                     }
-
                     break;
-
             }
-
         }
-
     }
 
     /**
@@ -353,15 +320,12 @@ public class MainActivity extends AppCompatActivity implements
      * @param placeType place type {from , to}
      */
     private void getPlaceLocation(String placeId, String placeType) {
-
         Log.d(TAG, "getPlaceLocation: getting the location...");
 
         if (placeId == null)
             return;
 
-
         placeType = placeType.toLowerCase();
-
         switch (placeType) {
             case "from":
 
@@ -372,9 +336,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                 Place place = places.get(0);
 
-                                /**/
                                 origin = place.getLatLng();
-                                /**/
 
                                 drawRoute(origin, destination);
 
@@ -382,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements
                                 places.release();
                             }
                         });
-
                 break;
 
             case "to":
@@ -394,14 +355,11 @@ public class MainActivity extends AppCompatActivity implements
 
                                 Place place = places.get(0);
 
-                                /**/
                                 destination = place.getLatLng();
-                                /**/
 
                                 drawRoute(origin, destination);
 
                                 Log.d(TAG, "onRoutingFailure: ORIGIN === " + origin + "\nDESTINTAION === " + destination);
-
 
                                 // releasing the buffer to avoid memory leaaaaaks
                                 places.release();
@@ -417,9 +375,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     /******************** Routing ********************/
-
     /**
      * draws shortest route between two points,
      * showing all the alternative routes
@@ -637,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
                         Toast.makeText(mContext, "Gps enabled", Toast.LENGTH_SHORT).show();
-                        resetActivity();
+                        getDeviceLocation(null);
                         break;
                     case Activity.RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to
@@ -650,21 +606,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
+    public void onConnected(@Nullable Bundle bundle) {}
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
+    public void onConnectionSuspended(int i) {}
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 
-    }
 
     /******************** LAYOUT ********************/
 
@@ -741,7 +689,6 @@ public class MainActivity extends AppCompatActivity implements
             destination = null;
         }
 
-
         // navigate the user to the SearchPlaceActivity
         searchPlace.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -758,7 +705,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     /**
      * shows the layout to allow the user to submit or cancel the order he made
      */
@@ -769,7 +715,6 @@ public class MainActivity extends AppCompatActivity implements
             transportations.get(i).setTransImg(R.drawable.ic_bike);
             transportations.get(i).setTransCost("12 L.E.");
         }
-
 
         submitLayout.setVisibility(View.VISIBLE);
 
@@ -853,14 +798,28 @@ public class MainActivity extends AppCompatActivity implements
                         Intent profile = new Intent(MainActivity.this, ProfileActivity.class);
                         startActivity(profile);
                         break;
-                    case R.id.logout:
-                        Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_LONG).show();
+
+                    case R.id.nav_history:
+                        Intent history = new Intent(MainActivity.this, HistoryActivity.class);
+                        startActivity(history);
                         break;
+
                 }
 
                 drawerLayout.closeDrawers();
 
                 return true;
+            }
+        });
+
+        LinearLayout logout = findViewById(R.id.logout_layout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+                Intent start = new Intent(mContext, StartActivity.class);
+                start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(start);
             }
         });
 
@@ -872,18 +831,7 @@ public class MainActivity extends AppCompatActivity implements
         //calling sync state is necessary or else your hamburger icon wont show up
         toggle.syncState();
 
-
     }
 
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (mMap != null) {
-            outState.putParcelable("destination", destination);
-            outState.putParcelable("origin", origin);
-            super.onSaveInstanceState(outState);
-        }
-    }
 
 }

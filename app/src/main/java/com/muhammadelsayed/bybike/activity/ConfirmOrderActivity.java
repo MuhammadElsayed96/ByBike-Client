@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -33,6 +34,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_order);
+        Log.d(TAG, "onCreate: started !!");
 
         setupWidgets();
 
@@ -51,7 +53,6 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Confirm order");
 
         placeFrom = findViewById(R.id.placeFrom);
         placeTo = findViewById(R.id.placeTo);
@@ -88,13 +89,10 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home :
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-
+                onBackPressed();
+                break;
         }
+        return super.onOptionsItemSelected(item);
 
     }
 }
