@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -134,11 +135,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        if (savedInstanceState != null) {
-//            origin = savedInstanceState.getParcelable("origin");
-//            destination = savedInstanceState.getParcelable("destination");
-//        }
 
         polylines = new ArrayList<>();
 
@@ -808,14 +804,22 @@ public class MainActivity extends AppCompatActivity implements
                         startActivity(history);
                         break;
 
-                    case R.id.nav_logout:
-                        Toast.makeText(getApplicationContext(), "Logout", Toast.LENGTH_LONG).show();
-                        break;
                 }
 
                 drawerLayout.closeDrawers();
 
                 return true;
+            }
+        });
+
+        LinearLayout logout = findViewById(R.id.logout_layout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+                Intent start = new Intent(mContext, StartActivity.class);
+                start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(start);
             }
         });
 
@@ -827,18 +831,7 @@ public class MainActivity extends AppCompatActivity implements
         //calling sync state is necessary or else your hamburger icon wont show up
         toggle.syncState();
 
-
     }
 
-
-//
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        if (mMap != null) {
-//            outState.putParcelable("destination", destination);
-//            outState.putParcelable("origin", origin);
-//            super.onSaveInstanceState(outState);
-//        }
-//    }
 
 }

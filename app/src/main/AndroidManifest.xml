@@ -29,7 +29,10 @@
         <activity
             android:name=".activity.StartActivity"
             android:launchMode="singleTop"
-            android:theme="@style/Theme_Custom_NoActionBar"></activity>
+            android:theme="@style/Theme_Custom_NoActionBar">
+
+        </activity>
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name">
