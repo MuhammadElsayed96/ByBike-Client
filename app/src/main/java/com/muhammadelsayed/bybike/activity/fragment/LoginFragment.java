@@ -154,6 +154,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
 
                             if (response.body() != null) {
+
                                 User currentUser = response.body().getUser();
 
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
