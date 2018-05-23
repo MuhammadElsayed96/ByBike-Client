@@ -269,8 +269,10 @@ public class MainActivity extends AppCompatActivity implements
                                     Log.d(TAG, "onComplete: current location is null");
 
                                     mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                                    if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                                    if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
                                         mEnableGps();
+
                                     }
                                 }
                             }
@@ -300,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements
                                     Log.d(TAG, "onComplete: current location is null");
                                     mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                                     if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                                       mEnableGps();
+                                        mEnableGps();
                                     }
 
                                 }
@@ -347,7 +349,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case "to":
-
                 mGeoDataClient.getPlaceById(placeId)
                         .addOnSuccessListener(new OnSuccessListener<PlaceBufferResponse>() {
                             @Override
@@ -365,14 +366,9 @@ public class MainActivity extends AppCompatActivity implements
                                 places.release();
                             }
                         });
-                break;
-
-            default:
 
                 break;
         }
-
-
     }
 
     /******************** Routing ********************/
@@ -396,90 +392,71 @@ public class MainActivity extends AppCompatActivity implements
 
             markersList.add(mMap.addMarker(originOptions));
 
-        }
+            if (destination == null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, DEFAULT_ZOOM));
+            } else {
+                MarkerOptions destOptions = new MarkerOptions()
+                        .position(destination)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        .title("End");
 
-        if (destination != null) {
+                markersList.add(mMap.addMarker(destOptions));
 
-            MarkerOptions destOptions = new MarkerOptions()
-                    .position(destination)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                    .title("End");
+                // controlling the camera position in a way that show both markers
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for (Marker m : markersList) {
+                    builder.include(m.getPosition());
+                }
+                LatLngBounds bounds = builder.build();
 
-            markersList.add(mMap.addMarker(destOptions));
+                int width = getResources().getDisplayMetrics().widthPixels;
+                int height = getResources().getDisplayMetrics().heightPixels;
+                int padding = (int) (width * 0.12);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, (height / 2), padding));
 
-        }
+                // getting the route
+                Routing routing = new Routing.Builder()
+                        .travelMode(AbstractRouting.TravelMode.DRIVING)
+                        .withListener(this)
+                        .alternativeRoutes(false)
+                        .waypoints(origin, destination)
+                        .build();
 
-        if (origin != null && destination == null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, DEFAULT_ZOOM));
-        } else if (origin != null) {
+                routing.execute();
 
-            // controlling the camera position in a way that show both markers
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (Marker m : markersList) {
-                builder.include(m.getPosition());
             }
-            LatLngBounds bounds = builder.build();
-
-            int width = getResources().getDisplayMetrics().widthPixels;
-            int height = getResources().getDisplayMetrics().heightPixels;
-            int padding = (int) (width * 0.12);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, (height / 2), padding));
-
-            // getting the route
-            Routing routing = new Routing.Builder()
-                    .travelMode(AbstractRouting.TravelMode.DRIVING)
-                    .withListener(this)
-                    .alternativeRoutes(false)
-                    .waypoints(origin, destination)
-                    .build();
-
-            routing.execute();
-
         }
-
     }
 
     /**
      * removes all routes from map
      */
     private void ereasePolylines() {
-
-        for (Polyline line : polylines) {
+        for (Polyline line : polylines)
             line.remove();
-        }
         polylines.clear();
-
     }
 
     @Override
     public void onRoutingFailure(RouteException e) {
-
         if (e != null) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.d(TAG, "onRoutingFailure: Error: " + e.getMessage());
         } else {
             Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
         }
-
     }
-
     @Override
-    public void onRoutingStart() {
-
-    }
+    public void onRoutingStart() {}
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
 
-
-        if(polylines.size()>0) {
-            for (Polyline poly : polylines) {
+        if(polylines.size()>0)
+            for (Polyline poly : polylines)
                 poly.remove();
-            }
-        }
 
         String distance = "", duration = "";
-
         polylines = new ArrayList<>();
         //add route(s) to the map.
         for (int i = 0; i < route.size(); i++) {
@@ -494,26 +471,18 @@ public class MainActivity extends AppCompatActivity implements
             Polyline polyline = mMap.addPolyline(polyOptions);
             polylines.add(polyline);
 
-
             distance = route.get(0).getDistanceText();
             duration = route.get(0).getDurationText();
-
-
         }
 
         for (int i = 0; i < transportations.size(); i++) {
             transportations.get(i).setTransDistance(distance + " - " + duration);
         }
-
         showSubmitLayout();
-
-
     }
 
     @Override
-    public void onRoutingCancelled() {
-
-    }
+    public void onRoutingCancelled() {}
 
     /******************** GPS STATUS TRACKING */
 
@@ -537,11 +506,8 @@ public class MainActivity extends AppCompatActivity implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(5000);
-
         mLocationSettingsRequest = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
-
         mResult();
-
     }
 
     /**
@@ -565,6 +531,7 @@ public class MainActivity extends AppCompatActivity implements
                         try {
 
                             status.startResolutionForResult(MainActivity.this, REQUEST_LOCATION);
+
                         } catch (IntentSender.SendIntentException e) {
                             Log.e(TAG, "onResult: IntentSender.SendIntentException : " + e.getMessage());
                         }
@@ -573,14 +540,12 @@ public class MainActivity extends AppCompatActivity implements
                         // Location settings are not satisfied. However, we have no way to fix the
                         // settings so we won't show the dialog.
 
-
                         break;
                 }
             }
 
         });
     }
-
 
     //callback method
     @Override
@@ -592,7 +557,10 @@ public class MainActivity extends AppCompatActivity implements
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
                         Toast.makeText(mContext, "Gps enabled", Toast.LENGTH_SHORT).show();
+
                         getDeviceLocation(null);
+                        drawRoute(origin, destination);
+
                         break;
                     case Activity.RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to
@@ -692,6 +660,11 @@ public class MainActivity extends AppCompatActivity implements
         searchPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                destination = null;
+                origin = null;
+                mMap.clear();
+
                 Intent intent = new Intent(mContext, PlaceSearchActivity.class);
                 intent.putExtra("SEARCH_FROM", searchFrom.getText());
 
@@ -722,11 +695,9 @@ public class MainActivity extends AppCompatActivity implements
         submitLayout.setVisibility(View.VISIBLE);
 
         spinnerAdapter = new CustomSpinnerAdapter(mContext, R.layout.custom_spinner_transprotaiton, transportations);
-
         spinnerTransportation.setAdapter(spinnerAdapter);
 
         final Transportation order = new Transportation();
-
         spinnerTransportation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -735,9 +706,7 @@ public class MainActivity extends AppCompatActivity implements
                 order.setTransImg(transportations.get(position).getTransImg());
                 order.setTransType(transportations.get(position).getTransType());
                 order.setTransDistance(transportations.get(position).getTransDistance());
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
@@ -753,10 +722,8 @@ public class MainActivity extends AppCompatActivity implements
                 intent.putExtra("totalCost", order.getTransCost());
 
                 startActivity(intent);
-
             }
         });
-
         cancelTrans.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -777,7 +744,7 @@ public class MainActivity extends AppCompatActivity implements
         origin = null;
         searchFrom.setText("My Location");
         searchTo.setText("Set up the destination");
-        getDeviceLocation(null);
+        getDeviceLocation("");
         drawRoute(origin, destination);
 
     }
@@ -805,9 +772,7 @@ public class MainActivity extends AppCompatActivity implements
                         break;
 
                 }
-
                 drawerLayout.closeDrawers();
-
                 return true;
             }
         });
@@ -816,7 +781,7 @@ public class MainActivity extends AppCompatActivity implements
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawerLayout.closeDrawers();
+//                drawerLayout.closeDrawers();
                 Intent start = new Intent(mContext, StartActivity.class);
                 start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(start);
