@@ -21,7 +21,7 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-                    setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_start);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         String userToken = pref.getString("USER_TOKEN", "USER_NOT_FOUND");
