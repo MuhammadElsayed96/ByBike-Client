@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final float DEFAULT_ZOOM = 17f;
 
-
     // REQUEST_CODES
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final int PLACE_PICKER_REQUEST = 210;
@@ -557,7 +556,6 @@ public class MainActivity extends AppCompatActivity implements
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
                         Toast.makeText(mContext, "Gps enabled", Toast.LENGTH_SHORT).show();
-
                         getDeviceLocation(null);
                         drawRoute(origin, destination);
 

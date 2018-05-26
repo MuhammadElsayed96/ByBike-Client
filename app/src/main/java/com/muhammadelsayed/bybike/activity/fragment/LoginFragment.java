@@ -48,14 +48,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private static String userToken = "";
 
-    private static View view;
-    private static EditText mEmail, mPassword;
-    private static Button loginButton;
-    private static TextView forgotPassword, signUp;
-    private static CheckBox show_hide_password;
-    private static LinearLayout loginLayout;
-    private static Animation shakeAnimation;
-    private static FragmentManager fragmentManager;
+    private View view;
+    private EditText mEmail, mPassword;
+    private Button loginButton;
+    private TextView forgotPassword, signUp;
+    private CheckBox show_hide_password;
+    private LinearLayout loginLayout;
+    private Animation shakeAnimation;
+    private FragmentManager fragmentManager;
 
     @Nullable
     @Override
@@ -143,7 +143,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     final User currentUser = new User(email, password);
 
 
-
                     UserClient service = RetrofitClientInstance.getRetrofitInstance()
                             .create(UserClient.class);
 
@@ -213,9 +212,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Validates user input before logging him in
+     *
      * @return false if input is not valid, true if valid
      */
-
     private boolean checkValidation() {
         boolean isValid = true;
         Log.d(TAG, "checkValidation: validating user input...");

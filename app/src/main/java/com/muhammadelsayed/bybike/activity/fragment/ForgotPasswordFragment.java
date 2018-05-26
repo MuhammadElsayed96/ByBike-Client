@@ -103,4 +103,6 @@ public class ForgotPasswordFragment extends Fragment implements View.OnClickList
             Toast.makeText(getActivity(), "Get Forgot Password.",
                     Toast.LENGTH_SHORT).show();
     }
+
+
 }

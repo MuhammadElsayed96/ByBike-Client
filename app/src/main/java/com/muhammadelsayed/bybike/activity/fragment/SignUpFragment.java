@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.utils.CustomToast;
 import com.muhammadelsayed.bybike.activity.utils.Utils;
@@ -22,14 +22,15 @@ import com.muhammadelsayed.bybike.activity.utils.Utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SignUpFragment extends Fragment implements View.OnClickListener{
-    private static View view;
-    private static EditText mFullName, mEmail, mPhoneNumber,
+public class SignUpFragment extends Fragment implements View.OnClickListener {
+    public static final String TAG = "SignUpFragment";
+    private View view;
+    private EditText mFullName, mEmail, mPhoneNumber,
             mPassword, mConfirmPassword;
-    private static TextView login;
-    private static Button signUpButton;
-    private static CheckBox terms_conditions;
-    private static FragmentManager fragmentManager;
+    private TextView login;
+    private Button signUpButton;
+    private CheckBox terms_conditions;
+    private FragmentManager fragmentManager;
 
 
     @Nullable
@@ -42,6 +43,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initViews() {
+        Log.d(TAG, "initViews: initializing the view...");
         mFullName = view.findViewById(R.id.singup_fullname);
         mEmail = view.findViewById(R.id.signup_email);
         mPhoneNumber = view.findViewById(R.id.signup_phone_number);
@@ -124,7 +126,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener{
             new CustomToast().showToast(getActivity(), view,
                     "Your Email Id is Invalid.");
         }
-            // Check if both password should be equal
+        // Check if both password should be equal
         else if (!confirmPassword.equals(password)) {
 
             isValid = false;
@@ -132,7 +134,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener{
             new CustomToast().showToast(getActivity(), view,
                     "Both password doesn't match.");
         }
-            // Make sure user should check Terms and Conditions checkbox
+        // Make sure user should check Terms and Conditions checkbox
         else if (!terms_conditions.isChecked()) {
 
             isValid = false;
