@@ -4,33 +4,24 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private String id;
-
+    private int id;
     private String uuid;
     private String name;
     private String email;
+    private String password;
     private String phone;
     private String image;
-    private String api_token;
     private String created_at;
     private String updated_at;
-    private String password;
 
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    public User() {
-    }
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
+
     public String getUuid() {
         return uuid;
     }
@@ -55,6 +46,14 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -69,14 +68,6 @@ public class User implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public String getApi_token() {
-        return api_token;
-    }
-
-    public void setApi_token(String api_token) {
-        this.api_token = api_token;
     }
 
     public String getCreated_at() {
@@ -95,14 +86,21 @@ public class User implements Serializable {
         this.updated_at = updated_at;
     }
 
-    public User(String id, String uuid, String name, String email, String phone, String image, String api_token, String created_at, String updated_at) {
+    public User() {}
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(int id, String uuid, String name, String email, String password, String phone, String image, String created_at, String updated_at) {
         this.id = id;
         this.uuid = uuid;
         this.name = name;
         this.email = email;
+        this.password = password;
         this.phone = phone;
         this.image = image;
-        this.api_token = api_token;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
@@ -110,13 +108,13 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", image='" + image + '\'' +
-                ", api_token='" + api_token + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 '}';
