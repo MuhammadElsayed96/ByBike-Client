@@ -142,12 +142,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                     final User currentUser = new User(email, password);
 
-
                     UserClient service = RetrofitClientInstance.getRetrofitInstance()
                             .create(UserClient.class);
 
                     Call<UserModel> call = service.loginUser(currentUser);
 
+                    
                     call.enqueue(new Callback<UserModel>() {
                         @Override
                         public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
