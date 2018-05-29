@@ -43,8 +43,8 @@ public class EditEmailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mEmail = findViewById(R.id.edit_email);
+        mEmail.setText(getIntent().getStringExtra("email"));
         mUpdate = findViewById(R.id.btn_update_email);
-        
         mUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

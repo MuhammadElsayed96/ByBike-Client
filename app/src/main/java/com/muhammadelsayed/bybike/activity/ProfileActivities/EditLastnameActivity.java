@@ -43,8 +43,8 @@ public class EditLastnameActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mLastname = findViewById(R.id.edit_lastname);
+        mLastname.setText(getIntent().getStringExtra("lastname"));
         mUpdate = findViewById(R.id.btn_update_lastname);
-        
         mUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

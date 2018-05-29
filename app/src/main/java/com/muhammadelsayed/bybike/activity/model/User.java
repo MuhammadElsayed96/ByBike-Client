@@ -86,11 +86,27 @@ public class User implements Serializable {
         this.updated_at = updated_at;
     }
 
+    public String getFirstname() {
+        String firstname = name;
+        if (this.name.contains(" "))
+            firstname = name.substring(0, this.name.indexOf(" "));
+        return firstname;
+    }
+
+    public String getLastname() {
+        String lastname = "";
+        if (this.name.contains(" "))
+            lastname = name.substring(this.name.indexOf(" "));
+        return lastname;
+    }
+
     public User() {}
 
     public User(String email, String password) {
+
         this.email = email;
         this.password = password;
+
     }
 
     public User(int id, String uuid, String name, String email, String password, String phone, String image, String created_at, String updated_at) {

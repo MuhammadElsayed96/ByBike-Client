@@ -46,7 +46,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "LoginFragment";
 
-    private static String userToken = "";
+    public static UserModel currentUser;
 
     private View view;
     private EditText mEmail, mPassword;
@@ -137,15 +137,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     progressDialog.setCancelable(true);
                     progressDialog.show();
 
-                    String email = mEmail.getText().toString();
-                    String password = mPassword.getText().toString();
+                    final String email = mEmail.getText().toString();
+                    final String password = mPassword.getText().toString();
 
-                    final User currentUser = new User(email, password);
+                    currentUser = new UserModel();
+                    currentUser.setUser(new User(email, password));
 
                     UserClient service = RetrofitClientInstance.getRetrofitInstance()
                             .create(UserClient.class);
 
-                    Call<UserModel> call = service.loginUser(currentUser);
+                    Call<UserModel> call = service.loginUser(currentUser.getUser());
 
                     
                     call.enqueue(new Callback<UserModel>() {
@@ -154,10 +155,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                             if (response.body() != null) {
 
-                                User currentUser = response.body().getUser();
-
+                                currentUser = response.body();
+                                Log.d(TAG, "onResponse: " + response.body());
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
-                                intent.putExtra("user", currentUser);
+                                intent.putExtra("current_user", currentUser);
                                 startActivity(intent);
 
                                 SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
@@ -168,7 +169,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                             } else {
 
-                                Toast.makeText(getActivity(), "I have no Idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
 
                             }
 

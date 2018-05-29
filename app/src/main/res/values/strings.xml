@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ByBike_Client</string>
+    <string name="app_name">Client</string>
 
     <string name="openDrawer">open_drawer</string>
     <string name="closeDrawer">close_drawer</string>
