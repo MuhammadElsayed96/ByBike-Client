@@ -43,8 +43,8 @@ public class EditPhoneActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPhone = findViewById(R.id.edit_phone);
+        mPhone.setText(getIntent().getStringExtra("phone"));
         mUpdate = findViewById(R.id.btn_update_phone);
-        
         mUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

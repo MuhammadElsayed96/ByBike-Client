@@ -8,6 +8,8 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.location.OnNmeaMessageListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -64,11 +66,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.ProfileActivities.ProfileActivity;
 import com.muhammadelsayed.bybike.activity.model.Transportation;
+import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.utils.CustomSpinnerAdapter;
 
 import java.util.ArrayList;
@@ -79,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback,
         RoutingListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -205,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult: called !!");
@@ -251,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements
                 default:
                     try {
                         Task location = mFusedLocationProviderClient.getLastLocation();
+
                         location.addOnCompleteListener(new OnCompleteListener() {
                             @Override
                             public void onComplete(@NonNull Task task) {
@@ -265,8 +269,6 @@ public class MainActivity extends AppCompatActivity implements
                                     drawRoute(origin, destination);
 
                                 } else {
-                                    Log.d(TAG, "onComplete: current location is null");
-
                                     mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                                     if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
@@ -761,6 +763,8 @@ public class MainActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.nav_profile:
                         Intent profile = new Intent(MainActivity.this, ProfileActivity.class);
+                        UserModel currentUser = (UserModel) getIntent().getSerializableExtra("current_user");
+                        profile.putExtra("current_user", currentUser);
                         startActivity(profile);
                         break;
 

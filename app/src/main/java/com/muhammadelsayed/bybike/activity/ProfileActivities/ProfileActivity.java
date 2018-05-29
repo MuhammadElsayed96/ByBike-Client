@@ -7,15 +7,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.fragment.LoginFragment;
+import com.muhammadelsayed.bybike.activity.model.UserModel;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
 
     private LinearLayout mLlEditLastname, mLlEditFirstname, mLlEditPhone, mLlEditEmail, mLlEditPassword;
-
+    private TextView mFirstname, mLastname, mPhone, mEmail, mPassword;
     private Toolbar toolbar;
 
     @Override
@@ -49,31 +52,58 @@ public class ProfileActivity extends AppCompatActivity {
         mLlEditPhone.setOnClickListener(mOnLlEditPhoneClickListener);
         mLlEditEmail.setOnClickListener(mOnLlEditEmailClickListener);
 
+        // getting current user
+        UserModel currentUser = (UserModel) getIntent().getSerializableExtra("current_user");
+
+        // filling profile TextViews with current user's info
+        mFirstname = findViewById(R.id.firstname_info);
+        mFirstname.setText(currentUser.getUser().getFirstname());
+
+        mLastname = findViewById(R.id.lastname_info);
+        mLastname.setText(currentUser.getUser().getLastname());
+
+        mPhone = findViewById(R.id.phone_info);
+        mPhone.setText(currentUser.getUser().getPhone());
+
+        mEmail = findViewById(R.id.email_info);
+        mEmail.setText(currentUser.getUser().getEmail());
+
+        mPassword = findViewById(R.id.password_info);
+        mPassword.setText("********");
+
     }
 
     // OnClick Listeners
     private LinearLayout.OnClickListener mOnLlEditFirstnameClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(getApplicationContext(), EditFirstnameActivity.class));
+            Intent firstnameIntent = new Intent(getApplicationContext(), EditFirstnameActivity.class);
+            firstnameIntent.putExtra("firstname", mFirstname.getText());
+            startActivity(firstnameIntent);
         }
     };
     private LinearLayout.OnClickListener mOnLlEditLastnameClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(getApplicationContext(), EditLastnameActivity.class));
+            Intent lastnameIntent = new Intent(getApplicationContext(), EditLastnameActivity.class);
+            lastnameIntent.putExtra("lastname", mLastname.getText());
+            startActivity(lastnameIntent);
         }
     };
     private LinearLayout.OnClickListener mOnLlEditPhoneClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(getApplicationContext(), EditPhoneActivity.class));
+            Intent phoneIntent = new Intent(getApplicationContext(), EditPhoneActivity.class);
+            phoneIntent.putExtra("phone", mPhone.getText());
+            startActivity(phoneIntent);
         }
     };
     private LinearLayout.OnClickListener mOnLlEditEmailClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(getApplicationContext(), EditEmailActivity.class));
+            Intent emailIntent = new Intent(getApplicationContext(), EditEmailActivity.class);
+            emailIntent.putExtra("email", mEmail.getText());
+            startActivity(emailIntent);
         }
     };
     private LinearLayout.OnClickListener mOnLlEditPasswordClickListener = new View.OnClickListener() {
