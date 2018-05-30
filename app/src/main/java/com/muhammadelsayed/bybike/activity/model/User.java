@@ -1,5 +1,7 @@
 package com.muhammadelsayed.bybike.activity.model;
 
+import com.muhammadelsayed.bybike.activity.utils.Utils;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -87,16 +89,16 @@ public class User implements Serializable {
     }
 
     public String getFirstname() {
-        String firstname = name;
-        if (this.name.contains(" "))
-            firstname = name.substring(0, this.name.indexOf(" "));
+        String firstname = "";
+        if (name != null)
+            firstname = Utils.splitName(name)[0];
         return firstname;
     }
 
     public String getLastname() {
         String lastname = "";
-        if (this.name.contains(" "))
-            lastname = name.substring(this.name.indexOf(" "));
+        if (name != null && name.contains(" "))
+            lastname = Utils.splitName(name)[1];
         return lastname;
     }
 

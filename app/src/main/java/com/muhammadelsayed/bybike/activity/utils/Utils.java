@@ -10,4 +10,27 @@ public class Utils {
     public static final String SignUpFragment = "SingUpFragment";
     public static final String ForgotPasswordFragment = "ForgotPasswordFragment";
 
+
+    /**
+     * This method split any name into 2 names, first and last name
+     *
+     * @param name is the name that will be split
+     * @return String array holding first and last name;
+     */
+    public static String[] splitName(String name) {
+        String[] names = name.split(" ", 2);
+        return names;
+    }
+
+    /**
+     * This method concatenates first and last name into full name
+     *
+     * @param firstname Last Name
+     * @param lastname First Name
+     * @return Full Name
+     */
+    public static String concatNames(String firstname, String lastname) {
+        return firstname + " " + lastname;
+    }
+
 }
