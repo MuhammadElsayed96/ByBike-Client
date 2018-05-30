@@ -41,7 +41,7 @@
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:singleLine="true"
-            android:text="abdullah@test.com"
+            android:text="user@test.com"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="16sp" />
@@ -106,7 +106,7 @@
             android:background="@drawable/loginbutton_selector"
             android:padding="3dp"
             android:text="@string/login"
-            android:textColor="@color/background_color"
+            android:textColor="@color/textPrimary"
             android:textSize="17sp"
             android:textStyle="bold" />
     </LinearLayout>

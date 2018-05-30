@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="175dp"
@@ -7,16 +8,36 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:gravity="center"
     android:paddingTop="32dp"
-    android:paddingBottom="20dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    >
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
 
-    <ImageView
-        android:src="@mipmap/icon_launcher"
-        android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:layout_gravity="center_vertical"
+        >
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/profile_image"
+            android:src="@mipmap/icon_launcher"
+            android:layout_gravity="center_vertical"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            app:civ_border="false"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Mohammed Deifallah"
+            android:textSize="18sp"
+            android:textColor="@color/textSecondary"
+            android:layout_margin="5dp"
+            />
+    </LinearLayout>
+
 
 </LinearLayout>

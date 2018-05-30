@@ -148,7 +148,7 @@
         android:background="@drawable/loginbutton_selector"
         android:padding="3dp"
         android:text="@string/signUp"
-        android:textColor="@color/background_color"
+        android:textColor="@color/textPrimary"
         android:textSize="17sp"
         android:textStyle="bold" />
 

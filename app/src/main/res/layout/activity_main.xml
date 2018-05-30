@@ -34,7 +34,7 @@
             android:layout_below="@+id/app_bar"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
-            android:background="@drawable/greenish_border"
+            android:background="@drawable/border"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:text="Submit"
                     android:layout_weight="1"
-                    android:background="@color/background_color"
+                    android:background="@color/colorPrimary"
                     android:textColor="@color/white"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"/>
@@ -151,7 +151,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/background_color"
+                    android:background="@color/colorPrimary"
                     android:text="Cancel"
                     android:textColor="@color/white"
                     android:layout_marginLeft="5dp"
@@ -175,7 +175,7 @@
             android:id="@+id/logout_layout"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/error"
+            android:background="@color/colorAccent"
             android:layout_gravity="bottom|center"
             android:gravity="center">
 

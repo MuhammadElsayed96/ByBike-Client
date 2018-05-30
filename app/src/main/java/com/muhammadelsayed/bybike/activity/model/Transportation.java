@@ -8,6 +8,7 @@ public class Transportation {
     private String transDistance;
 
 
+
     public String getTransType() {
         return transType;
     }
