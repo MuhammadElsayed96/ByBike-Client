@@ -50,13 +50,11 @@
 
         <activity
             android:name=".activity.ProfileActivities.ProfileActivity"
-            android:label="Edit Profile"
-            android:launchMode="singleTop" />
+            android:label="Edit Profile"/>
 
         <activity
             android:name=".activity.ProfileActivities.EditFirstnameActivity"
-            android:label="Edit First Name"
-            android:launchMode="singleTop" />
+            android:label="Edit First Name"/>
 
         <activity
             android:name=".activity.ProfileActivities.EditLastnameActivity"

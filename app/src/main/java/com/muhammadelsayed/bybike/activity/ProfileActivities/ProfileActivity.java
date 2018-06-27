@@ -13,6 +13,8 @@ import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.fragment.LoginFragment;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
 
+import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
@@ -52,8 +54,6 @@ public class ProfileActivity extends AppCompatActivity {
         mLlEditPhone.setOnClickListener(mOnLlEditPhoneClickListener);
         mLlEditEmail.setOnClickListener(mOnLlEditEmailClickListener);
 
-        // getting current user
-        UserModel currentUser = (UserModel) getIntent().getSerializableExtra("current_user");
 
         // filling profile TextViews with current user's info
         mFirstname = findViewById(R.id.firstname_info);
@@ -79,6 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent firstnameIntent = new Intent(getApplicationContext(), EditFirstnameActivity.class);
             firstnameIntent.putExtra("firstname", mFirstname.getText());
+            firstnameIntent.putExtra("current_user", currentUser);
             startActivity(firstnameIntent);
         }
     };

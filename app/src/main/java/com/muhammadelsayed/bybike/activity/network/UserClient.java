@@ -15,6 +15,12 @@ public interface UserClient {
     @POST("user/login")
     Call<UserModel> loginUser(@Body User user);
 
-//I!038cK@FduzwJSsgV#SBgxV46K)No6J)0fin&kUv889c$c$!Q
+    @POST("user/update")
+    Call<UserModel> updateUser(@Body User user);
+
+    @POST("user/update/password")
+    Call<UserModel> updateUserPassword(@Body User user);
+
+
 
 }

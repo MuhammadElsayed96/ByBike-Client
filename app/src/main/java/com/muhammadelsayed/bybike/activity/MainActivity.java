@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRoutingCancelled() {}
 
-    /******************** GPS STATUS TRACKING */
+    /******************** GPS STATUS TRACKING ********************/
 
     /**
      * initializes GoogleApiClient object and requests the location settings to get the gps state
@@ -763,8 +763,8 @@ public class MainActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                     case R.id.nav_profile:
                         Intent profile = new Intent(MainActivity.this, ProfileActivity.class);
-                        UserModel currentUser = (UserModel) getIntent().getSerializableExtra("current_user");
-                        profile.putExtra("current_user", currentUser);
+//                        UserModel currentUser = (UserModel) getIntent().getSerializableExtra("current_user");
+//                        profile.putExtra("current_user", currentUser);
                         startActivity(profile);
                         break;
 
