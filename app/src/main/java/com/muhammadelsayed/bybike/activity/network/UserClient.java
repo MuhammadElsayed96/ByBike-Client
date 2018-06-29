@@ -21,6 +21,7 @@ public interface UserClient {
     @POST("user/update/password")
     Call<UserModel> updateUserPassword(@Body User user);
 
-
+    @POST("user/info")
+    Call<UserModel> getUserInfo(@Body User user);
 
 }
