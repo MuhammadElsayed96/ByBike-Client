@@ -156,9 +156,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             if (response.body() != null) {
 
                                 currentUser = response.body();
+                                currentUser.getUser().setApi_token(response.body().getToken());
                                 Log.d(TAG, "onResponse: " + response.body());
                                 Intent intent = new Intent(getActivity(), MainActivity.class);
-                                intent.putExtra("current_user", currentUser);
+//                                intent.putExtra("current_user", currentUser);
                                 startActivity(intent);
 
                                 SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();

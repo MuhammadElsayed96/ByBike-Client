@@ -23,7 +23,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     //noinspection GradleCompatible
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
@@ -33,6 +33,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:design:27.1.1'
+
+
+    implementation 'com.mikhaellopez:circularimageview:3.0.2'
+    implementation 'me.zhanghai.android.materialratingbar:library:1.2.0'
+    implementation 'me.grantland:autofittextview:0.2.1'
 
     // for google directions
     implementation 'com.google.maps:google-maps-services:0.2.7'
@@ -44,7 +49,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
-    compile 'com.mikhaellopez:circularimageview:3.0.2'
-    compile 'me.zhanghai.android.materialratingbar:library:1.2.0'
-    compile 'me.grantland:autofittextview:0.2.+'
+    // AwesomeSplash
+    implementation 'com.github.ViksaaSkool:AwesomeSplash:v1.0.0'
 }

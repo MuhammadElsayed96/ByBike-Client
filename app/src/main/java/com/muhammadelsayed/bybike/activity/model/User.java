@@ -13,6 +13,7 @@ public class User implements Serializable {
     private String password;
     private String phone;
     private String image;
+    private String api_token;
     private String created_at;
     private String updated_at;
 
@@ -72,6 +73,14 @@ public class User implements Serializable {
         this.image = image;
     }
 
+    public String getApi_token() {
+        return api_token;
+    }
+
+    public void setApi_token(String api_token) {
+        this.api_token = api_token;
+    }
+
     public String getCreated_at() {
         return created_at;
     }
@@ -102,7 +111,8 @@ public class User implements Serializable {
         return lastname;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public User(String email, String password) {
 
@@ -111,7 +121,7 @@ public class User implements Serializable {
 
     }
 
-    public User(int id, String uuid, String name, String email, String password, String phone, String image, String created_at, String updated_at) {
+    public User(int id, String uuid, String name, String email, String password, String phone, String image, String api_token, String created_at, String updated_at) {
         this.id = id;
         this.uuid = uuid;
         this.name = name;
@@ -119,6 +129,7 @@ public class User implements Serializable {
         this.password = password;
         this.phone = phone;
         this.image = image;
+        this.api_token = api_token;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
@@ -133,8 +144,10 @@ public class User implements Serializable {
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", image='" + image + '\'' +
+                ", api_token='" + api_token + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 '}';
     }
 }
+

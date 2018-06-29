@@ -26,14 +26,24 @@
             android:value="@string/google_maps_key" />
 
         <!-- Activities -->
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/SplashTheme"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activity.StartActivity"
             android:launchMode="singleTop"
-            android:theme="@style/Theme_Custom_NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:theme="@style/Theme_Custom_NoActionBar"
+            android:screenOrientation="portrait">
+
         </activity>
 
         <activity
@@ -50,13 +60,11 @@
 
         <activity
             android:name=".activity.ProfileActivities.ProfileActivity"
-            android:label="Edit Profile"
-            android:launchMode="singleTop" />
+            android:label="Edit Profile"/>
 
         <activity
             android:name=".activity.ProfileActivities.EditFirstnameActivity"
-            android:label="Edit First Name"
-            android:launchMode="singleTop" />
+            android:label="Edit First Name"/>
 
         <activity
             android:name=".activity.ProfileActivities.EditLastnameActivity"
