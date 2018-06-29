@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "onCreate: created !!");
         polylines = new ArrayList<>();
 
         getLocationPermission();
