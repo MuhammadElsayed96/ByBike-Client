@@ -1,6 +1,6 @@
 package com.muhammadelsayed.bybike.activity.model;
 
-import com.google.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLng;
 
 public class Order {
 
@@ -39,6 +39,8 @@ public class Order {
                 ", api_token='" + api_token + '\'' +
                 '}';
     }
+
+
 
     public String getEmail() {
         return email;
@@ -94,5 +96,16 @@ public class Order {
 
     public void setApi_token(String api_token) {
         this.api_token = api_token;
+    }
+
+
+    public void setSenderLatLng(LatLng sender) {
+        Sender_Lat = String.valueOf(sender.latitude);
+        Sender_Lng = String.valueOf(sender.longitude);
+    }
+
+    public void setReceiverLatLng(LatLng receiver) {
+        Receiver_lat = String.valueOf(receiver.latitude);
+        Receiver_lng = String.valueOf(receiver.longitude);
     }
 }

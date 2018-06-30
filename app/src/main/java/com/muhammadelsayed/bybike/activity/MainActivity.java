@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<Transportation> transportations = Arrays.asList(new Transportation(), new Transportation(), new Transportation());
 
-    private static LatLng origin = null;
-    private static LatLng destination = null;
+    public static LatLng origin = null;
+    public static LatLng destination = null;
 
     // widgets
     private RelativeLayout searchPlace;
