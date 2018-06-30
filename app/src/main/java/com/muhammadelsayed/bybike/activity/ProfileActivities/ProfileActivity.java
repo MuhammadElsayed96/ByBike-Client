@@ -52,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         mLlEditLastname.setOnClickListener(mOnLlEditLastnameClickListener);
         mLlEditPassword.setOnClickListener(mOnLlEditPasswordClickListener);
         mLlEditPhone.setOnClickListener(mOnLlEditPhoneClickListener);
-        mLlEditEmail.setOnClickListener(mOnLlEditEmailClickListener);
+//        mLlEditEmail.setOnClickListener(mOnLlEditEmailClickListener);
 
 
         // filling profile TextViews with current user's info
