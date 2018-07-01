@@ -377,6 +377,8 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * draws shortest route between two points,
      * showing all the alternative routes
+     * using this library : https://github.com/jd-alexander/Google-Directions-Android
+     *
      * @param origin the location from which the trip will start
      * @param destination the location where the trip ends
      */
