@@ -26,9 +26,7 @@ import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.current
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "SplashActivity";
-
-    public static boolean isLogged = false;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +36,8 @@ public class SplashActivity extends AppCompatActivity {
         String token = prefs.getString("USER_TOKEN", "");
 
         Log.d(TAG, "onCreate: TOKEN = " + token);
-        Log.d(TAG, "onCreate: Current User Before = " + currentUser);
 
         checkUserSession(token);
-
-        Log.d(TAG, "onCreate: Current User After = " + currentUser);
-
 
     }
 
@@ -71,7 +65,6 @@ public class SplashActivity extends AppCompatActivity {
 
                     }
                 }
-
 
                 @Override
                 public void onFailure(Call<UserModel> call, Throwable t) {
