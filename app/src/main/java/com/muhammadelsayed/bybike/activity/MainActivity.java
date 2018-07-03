@@ -8,11 +8,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.OnNmeaMessageListener;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -68,13 +64,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.ProfileActivities.ProfileActivity;
 import com.muhammadelsayed.bybike.activity.model.Transportation;
-import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.utils.CustomSpinnerAdapter;
 import com.squareup.picasso.Picasso;
@@ -152,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getLocationPermission();
 
+
     }
 
     /******************** Map ********************/
@@ -163,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (mMap == null){
+        if (mMap == null) {
             mMap = googleMap;
 
             // Construct a GeoDataClient.
@@ -182,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements
             setUpNavigationView();
         }
     }
-
 
 
     /**
@@ -246,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * gets the device's current location and move the camera to it.
+     *
      * @param placeType place type {from, to} YOU CAN SET IT TO NULL if you do not need it
      */
     private void getDeviceLocation(String placeType) {
@@ -329,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Gets the place latlng and sets a marker for it on the map an moves the camera to it
+     *
      * @param placeId   place ID
      * @param placeType place type {from , to}
      */
@@ -388,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements
      * showing all the alternative routes
      * using this library : https://github.com/jd-alexander/Google-Directions-Android
      *
-     * @param origin the location from which the trip will start
+     * @param origin      the location from which the trip will start
      * @param destination the location where the trip ends
      */
     private void drawRoute(LatLng origin, LatLng destination) {
@@ -459,13 +455,15 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
-    public void onRoutingStart() {}
+    public void onRoutingStart() {
+    }
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
 
-        if(polylines.size()>0)
+        if (polylines.size() > 0)
             for (Polyline poly : polylines)
                 poly.remove();
 
@@ -495,7 +493,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onRoutingCancelled() {}
+    public void onRoutingCancelled() {
+    }
 
     /******************** GPS STATUS TRACKING ********************/
 
@@ -586,11 +585,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {}
+    public void onConnected(@Nullable Bundle bundle) {
+    }
+
     @Override
-    public void onConnectionSuspended(int i) {}
+    public void onConnectionSuspended(int i) {
+    }
+
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
 
 
     /******************** LAYOUT ********************/
@@ -602,7 +606,7 @@ public class MainActivity extends AppCompatActivity implements
         navigationView = findViewById(R.id.nav_view);
 
 
-        View headerView =  navigationView.getHeaderView(0);
+        View headerView = navigationView.getHeaderView(0);
 
         profilePhoto = headerView.findViewById(R.id.profile_photo);
         Picasso.get()
@@ -740,8 +744,10 @@ public class MainActivity extends AppCompatActivity implements
                 order.setTransType(transportations.get(position).getTransType());
                 order.setTransDistance(transportations.get(position).getTransDistance());
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         submitTrans.setOnClickListener(new View.OnClickListener() {
