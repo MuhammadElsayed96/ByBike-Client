@@ -1,9 +1,13 @@
 package com.muhammadelsayed.bybike.activity.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -14,13 +18,24 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.MainActivity;
+import com.muhammadelsayed.bybike.activity.model.SignupResponse;
+import com.muhammadelsayed.bybike.activity.model.User;
+import com.muhammadelsayed.bybike.activity.model.UserModel;
+import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
+import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.muhammadelsayed.bybike.activity.utils.CustomToast;
 import com.muhammadelsayed.bybike.activity.utils.Utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = "SignUpFragment";
@@ -69,13 +84,63 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
                 // Call checkValidation method
                 if (checkValidation()) {
-                    ProgressDialog progressDialog = new ProgressDialog(getActivity(), R.style.ProgressDialogTheme);
+                    final ProgressDialog progressDialog = new ProgressDialog(getActivity(), R.style.ProgressDialogTheme);
                     progressDialog.setMessage("Authenticating...");
                     progressDialog.setCancelable(true);
                     progressDialog.show();
 
+                    final String email = mEmail.getText().toString();
+                    final String password = mPassword.getText().toString();
+                    final String phone = mPhoneNumber.getText().toString();
+                    final String name = mFullName.getText().toString();
 
+                    User currentUser = new User(email, password);
+                    currentUser.setName(name);
+                    currentUser.setPhone(phone);
+
+                    UserClient service = RetrofitClientInstance.getRetrofitInstance()
+                            .create(UserClient.class);
+
+                    Call<SignupResponse> call = service.signupUser(currentUser);
+
+
+                    call.enqueue(new Callback<SignupResponse>() {
+                        @Override
+                        public void onResponse(@NonNull Call<SignupResponse> call, Response<SignupResponse> response) {
+
+                            if (response.body() != null) {
+
+                                Log.d(TAG, "onResponse: == " + response.body());
+                                Snackbar.make(view, "Signed up successfully", Snackbar.LENGTH_SHORT).show();
+
+                                // Replace login fragment
+                                fragmentManager
+                                        .beginTransaction()
+                                        .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                                        .replace(R.id.frameContainer,
+                                                new LoginFragment(),
+                                                Utils.LoginFragment).commit();
+
+                            } else {
+
+                                Toast.makeText(getActivity(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(Call<SignupResponse> call, Throwable t) {
+
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), "network error !!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
+
+
+
                 break;
 
             case R.id.alreadyUser:

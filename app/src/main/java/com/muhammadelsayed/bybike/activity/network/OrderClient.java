@@ -9,6 +9,6 @@ import retrofit2.http.POST;
 
 public interface OrderClient {
 
-    @POST("user/order/create")
+    @POST("api/user/order/create")
     Call<RetroResponse> createOrder(@Body Order order);
 }
