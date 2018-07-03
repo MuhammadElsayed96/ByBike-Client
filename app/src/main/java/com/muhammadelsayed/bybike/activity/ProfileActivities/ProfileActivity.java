@@ -1,17 +1,11 @@
 package com.muhammadelsayed.bybike.activity.ProfileActivities;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,26 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.muhammadelsayed.bybike.R;
-import com.muhammadelsayed.bybike.activity.fragment.LoginFragment;
-import com.muhammadelsayed.bybike.activity.model.ProfileImageUpdate;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.http.Multipart;
 
 import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
 
@@ -59,14 +45,6 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView mProfileImage;
     private Toolbar toolbar;
 
-    private String mImageUrl = "";
-
-
-    private static final int REQUEST_EXTERNAL_STORAGE = 3;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,10 +97,8 @@ public class ProfileActivity extends AppCompatActivity {
         mProfileImage = findViewById(R.id.profile_image);
         Picasso.get()
                 .load(RetrofitClientInstance.BASE_URL + currentUser.getUser().getImage())
-                .placeholder(R.drawable.profile)
-                .error(R.drawable.profile)
+                .error(R.mipmap.icon_launcher)
                 .into(mProfileImage);
-
     }
 
     // OnClick Listeners
@@ -163,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity {
         public void onClick(View v) {
 
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/jpeg");
+            intent.setType("image/*");
 
             try {
                 startActivityForResult(intent, INTENT_REQUEST_CODE);
@@ -175,35 +151,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         }
     };
-
-
-    /**
-     * Creates a picture chooser intent to choose a picture from the gallery
-     *
-     * ref : https://stackoverflow.com/questions/5309190/android-pick-images-from-gallery
-     */
-    public  void openGallery() {
-
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-
-
-
-//        // This brings up the Documents app. To allow the user to also use any gallery apps they might have installed
-//        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-//        getIntent.setType("image/*");
-//
-//        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        pickIntent.setType("image/*");
-//
-//        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-//        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-//
-//        startActivityForResult(chooserIntent, PICK_IMAGE);
-
-    }
 
 
     /**
@@ -252,7 +199,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
         if (requestCode == INTENT_REQUEST_CODE) {
 
             if (resultCode == RESULT_OK) {
@@ -260,11 +206,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Uri uri = data.getData();
                 Log.d(TAG, "onActivityResult: URI = " + uri);
 
-                Picasso.get().load(getRealPathFromURI(uri))
-                        .into(mProfileImage);
-
                 File imageFile = new File(getRealPathFromURI(uri));
-
 
                 RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
 
@@ -274,7 +216,6 @@ public class ProfileActivity extends AppCompatActivity {
                 UserClient service = RetrofitClientInstance.getRetrofitInstance()
                         .create(UserClient.class);
 
-
                 Call<UserModel> call = service.updateUserProfileImage(token, body);
 
                 call.enqueue(new Callback<UserModel>() {
@@ -283,11 +224,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                         if (response.isSuccessful()) {
                             if(response.body() != null) {
+                                currentUser.setUser(response.body().getUser());
                                 Log.d(TAG, "onResponse: " + response.body());
                                 Picasso.get()
                                         .load(RetrofitClientInstance.BASE_URL + response.body().getUser().getImage())
-                                        .placeholder(R.mipmap.ic_launcher)
-                                        .error(R.mipmap.ic_launcher)
+                                        .error(R.mipmap.icon_launcher)
                                         .into(mProfileImage);
                                 Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
                             } else {
