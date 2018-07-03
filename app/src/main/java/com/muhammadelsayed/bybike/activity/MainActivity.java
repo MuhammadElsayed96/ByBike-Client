@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.OnNmeaMessageListener;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -26,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -73,11 +75,15 @@ import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.ProfileActivities.ProfileActivity;
 import com.muhammadelsayed.bybike.activity.model.Transportation;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
+import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.utils.CustomSpinnerAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
 
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -119,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements
     private TextView searchFrom, searchTo;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    private ImageView profilePhoto;
+    private TextView mFullname;
     private Toolbar toolbar;
     private Spinner spinnerTransportation;
     private RelativeLayout submitLayout;
@@ -145,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements
         getLocationPermission();
 
     }
-
 
     /******************** Map ********************/
 
@@ -175,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements
             setUpNavigationView();
         }
     }
+
+
 
     /**
      * initializes the map fragment
@@ -586,6 +595,28 @@ public class MainActivity extends AppCompatActivity implements
 
     /******************** LAYOUT ********************/
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationView = findViewById(R.id.nav_view);
+
+
+        View headerView =  navigationView.getHeaderView(0);
+
+        profilePhoto = headerView.findViewById(R.id.profile_photo);
+        Picasso.get()
+                .load(RetrofitClientInstance.BASE_URL + currentUser.getUser().getImage())
+                .error(R.mipmap.icon_launcher)
+                .into(profilePhoto);
+
+//        profilePhoto.setImageURI(Uri.parse(RetrofitClientInstance.BASE_URL + currentUser.getUser().getImage()));
+        Log.d(TAG, "setUpNavigationView: IMAGE = " + profilePhoto);
+        mFullname = headerView.findViewById(R.id.fullname);
+        mFullname.setText(currentUser.getUser().getName());
+
+    }
+
     /**
      * sets up all activity widgets
      */
@@ -596,7 +627,6 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
 
         searchPlace = findViewById(R.id.search_layout);
         searchFrom = findViewById(R.id.searchFrom);
