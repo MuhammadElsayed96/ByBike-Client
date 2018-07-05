@@ -31,12 +31,13 @@ public class SplashActivity extends AppCompatActivity {
         Log.wtf(TAG, "onCreate() has been instantiated");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+//        setContentView(R.layout.activity_splash);
 
         checkUserSession();
 
         Log.d(TAG, "onCreate: Current User After = " + currentUser);
     }
+
 
     private void checkUserSession() {
         Log.wtf(TAG, "checkUserSession() has been instantiated");
