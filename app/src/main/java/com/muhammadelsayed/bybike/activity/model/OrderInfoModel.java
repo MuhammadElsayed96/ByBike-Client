@@ -3,11 +3,11 @@ package com.muhammadelsayed.bybike.activity.model;
 import java.io.Serializable;
 
 public class OrderInfoModel implements Serializable{
-    private Order order;
+    private OrderInfo order;
     private Rider transporter;
 
 
-    public OrderInfoModel(Order order, Rider transporter) {
+    public OrderInfoModel(OrderInfo order, Rider transporter) {
         this.order = order;
         this.transporter = transporter;
     }
@@ -16,11 +16,11 @@ public class OrderInfoModel implements Serializable{
     }
 
 
-    public Order getOrder() {
+    public OrderInfo getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(OrderInfo order) {
         this.order = order;
     }
 
