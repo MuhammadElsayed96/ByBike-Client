@@ -5,6 +5,7 @@
     <!-- Permissions -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -69,8 +70,10 @@
             android:label="Edit Password"
             android:launchMode="singleTop" />
         <activity android:name=".activity.HistoryActivity" />
-        <activity android:name=".activity.OrderTracking" />
-        <activity android:name=".activity.WaitingActivity"></activity>
+        <activity android:name=".activity.WaitingActivity" />
+        <activity
+            android:name=".activity.OrderTracking"
+            android:label="@string/title_activity_order_tracking"></activity>
     </application>
 
 </manifest>

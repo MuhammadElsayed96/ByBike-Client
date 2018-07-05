@@ -63,6 +63,8 @@
     <string name="select_locations">Select locations</string>
     <string name="history">History</string>
     <string name="logout">Logout</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_order_tracking">Map</string>
 
 
 </resources>
