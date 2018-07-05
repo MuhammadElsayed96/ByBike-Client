@@ -49,8 +49,12 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     private Spinner spinnerPayment;
     private Button confirmOrder;
 
+    public static Order currentOrder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_order);
         Log.d(TAG, "onCreate: started !!");
@@ -66,6 +70,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
      * sets up all the widgets in this library
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
 
         mContext = getApplicationContext();
 
@@ -101,12 +106,12 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                 OrderClient service = RetrofitClientInstance.getRetrofitInstance()
                         .create(OrderClient.class);
 
-                final Order order = new Order();
+                currentOrder = new Order();
 
-                order.setSenderLatLng(origin);
-                order.setReceiverLatLng(destination);
-                order.setApi_token(currentUser.getToken());
-                Call<RetroResponse> call = service.createOrder(order);
+                currentOrder.setSenderLatLng(origin);
+                currentOrder.setReceiverLatLng(destination);
+                currentOrder.setApi_token(currentUser.getToken());
+                Call<RetroResponse> call = service.createOrder(currentOrder);
 
                 call.enqueue(new Callback<RetroResponse>() {
                     @Override
@@ -114,9 +119,13 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
                         if (response.body() != null) {
 
-                            Log.d(TAG, "onResponse: " + response.body());
+                            currentOrder = response.body().getOrder();
+                            Log.d(TAG, "onResponse: " + currentOrder);
                             Toast.makeText(ConfirmOrderActivity.this, "Succeeded", Toast.LENGTH_SHORT).show();
-                            finish();
+
+                            Intent intent = new Intent(mContext, WaitingActivity.class);
+                            intent.putExtra("currentOrder", currentOrder);
+                            startActivity(intent);
 
                         } else {
 
@@ -130,13 +139,11 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                     public void onFailure(Call<RetroResponse> call, Throwable t) {
 
                         Log.e(TAG, "onFailure: " + t.getMessage() + " ----\n----" + t.getCause());
-                        Log.d(TAG, "onFailure: Order = " + order);
+                        Log.d(TAG, "onFailure: Order = " + currentOrder);
                         Toast.makeText(getApplicationContext(), "network error !!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
-
-                finish();
             }
 
         });
@@ -145,6 +152,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         switch (item.getItemId()) {
             case android.R.id.home :

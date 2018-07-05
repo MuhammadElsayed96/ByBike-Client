@@ -41,6 +41,7 @@ public class EditFirstnameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_firstname);
+        Log.wtf(TAG, "onCreate() has been instantiated");
 
 
         // initializing activity widgets
@@ -52,6 +53,7 @@ public class EditFirstnameActivity extends AppCompatActivity {
      * sets up all activity widgets
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,6 +74,7 @@ public class EditFirstnameActivity extends AppCompatActivity {
     }
 
     private void updateUser() {
+        Log.wtf(TAG, "updateUser() has been instantiated");
 
         if (checkValidation()) {
 //
@@ -127,6 +130,7 @@ public class EditFirstnameActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         if (item.getItemId() == android.R.id.home)
             onBackPressed();

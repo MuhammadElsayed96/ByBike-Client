@@ -2,6 +2,8 @@ package com.muhammadelsayed.bybike.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,11 +34,21 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.model.PlaceModel;
+import com.muhammadelsayed.bybike.activity.model.User;
+import com.muhammadelsayed.bybike.activity.model.UserModel;
+import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
+import com.muhammadelsayed.bybike.activity.network.UserClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
 
 public class PlaceSearchActivity extends AppCompatActivity {
 
@@ -74,6 +86,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
      * @param places a List of all the search result
      */
     private void simpleAdapterListView(final List<PlaceModel> places) {
+        Log.wtf(TAG, "simpleAdapterListView() has been instantiated");
 
 
         itemDataList.clear();
@@ -94,8 +107,12 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
+        checkUserSession();
         setContentView(R.layout.place_search_activity);
+
 
         // initializing activity widgets
         setupWidgets();
@@ -172,6 +189,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Log.wtf(TAG, "onQueryTextChange() has been instantiated");
 
                 placesFrom.clear();
                 Task<AutocompletePredictionBufferResponse> results =
@@ -349,6 +367,8 @@ public class PlaceSearchActivity extends AppCompatActivity {
      * @param placeType place type {from , to}
      */
     private void setupPlacePicker(String placeType) {
+        Log.wtf(TAG, "setupPlacePicker() has been instantiated");
+
         placeType = placeType.toLowerCase();
 
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -385,6 +405,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.wtf(TAG, "onActivityResult() has been instantiated");
 
         if (requestCode == FROM_PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -407,6 +428,8 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
@@ -417,8 +440,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        Log.d(TAG, "onBackPressed: BACK BUTTON PRESSED");
+        Log.wtf(TAG, "onBackPressed() has been instantiated");
 
         Intent intent = new Intent(this, MainActivity.class);
 
@@ -458,6 +480,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
      * sets up all the activity widgets
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
         mContext = getApplicationContext();
 
         toolbar = findViewById(R.id.toolbar);
@@ -478,6 +501,44 @@ public class PlaceSearchActivity extends AppCompatActivity {
         searchFrom.setQuery(getIntent().getStringExtra("SEARCH_FROM"), false);
         searchTo.setQuery(getIntent().getStringExtra("SEARCH_TO"), false);
 
+    }
+
+
+
+    /******************** SESSION ********************/
+    private void checkUserSession() {
+        Log.wtf(TAG, "checkUserSession() has been instantiated");
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final String token = prefs.getString("USER_TOKEN", "");
+        if (!token.equals("")) {
+
+            User user = new User();
+            user.setApi_token(token);
+            UserClient service = RetrofitClientInstance.getRetrofitInstance()
+                    .create(UserClient.class);
+            Call<UserModel> call = service.getUserInfo(user);
+            call.enqueue(new Callback<UserModel>() {
+                @Override
+                public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
+                    if (response.body() != null) {
+                        Log.d(TAG, "onResponse: " + currentUser);
+                        if (!token.equals(response.body().getUser().getApi_token())) {
+                            startActivity(new Intent(PlaceSearchActivity.this, StartActivity.class));
+                            finish();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<UserModel> call, Throwable t) {
+                    startActivity(new Intent(PlaceSearchActivity.this, StartActivity.class));
+                    finish();
+                }
+            });
+        } else {
+            startActivity(new Intent(PlaceSearchActivity.this, StartActivity.class));
+            finish();
+        }
     }
 
 

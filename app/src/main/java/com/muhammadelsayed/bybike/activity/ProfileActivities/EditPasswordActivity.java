@@ -36,6 +36,8 @@ public class EditPasswordActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_password);
 
@@ -51,6 +53,7 @@ public class EditPasswordActivity extends AppCompatActivity {
      * sets up all activity widgets
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,6 +74,7 @@ public class EditPasswordActivity extends AppCompatActivity {
     }
 
     private void updateUser() {
+        Log.wtf(TAG, "updateUser() has been instantiated");
 
         if (checkValidation()) {
 //
@@ -120,6 +124,7 @@ public class EditPasswordActivity extends AppCompatActivity {
     }
 
     private boolean checkValidation() {
+        Log.wtf(TAG, "checkValidation() has been instantiated");
 
         if (mNewPassword.getText().toString().length() < 6) {
             error = "Password must be at least 6 characters";
@@ -136,6 +141,7 @@ public class EditPasswordActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         if (item.getItemId() == android.R.id.home)
             onBackPressed();

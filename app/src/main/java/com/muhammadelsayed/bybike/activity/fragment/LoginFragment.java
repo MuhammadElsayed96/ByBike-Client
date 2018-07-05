@@ -61,8 +61,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        Log.wtf(TAG, "onCreateView() has been instantiated");
         view = inflater.inflate(R.layout.login_layout, container, false);
-        Log.d(TAG, "onCreateView: started !!");
         initViews();
         setListeners();
 
@@ -74,7 +74,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      */
     private void initViews() {
 
-        Log.d(TAG, "initViews: initializing the view...");
+        Log.wtf(TAG, "initViews() has been instantiated");
         fragmentManager = getActivity().getSupportFragmentManager();
 
         // widgets
@@ -96,7 +96,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      */
     private void setListeners() {
 
-        Log.d(TAG, "setListeners: setting listeners for corresponding widgets");
+        Log.wtf(TAG, "setListeners() has been instantiated");
 
         loginButton.setOnClickListener(this);
         forgotPassword.setOnClickListener(this);
@@ -127,6 +127,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        Log.wtf(TAG, "onClick() has been instantiated");
+
         switch (v.getId()) {
             case R.id.loginBtn:
                 Log.d(TAG, "onClick: validating input...");
@@ -218,6 +220,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * @return false if input is not valid, true if valid
      */
     private boolean checkValidation() {
+        Log.wtf(TAG, "checkValidation() has been instantiated");
+
         boolean isValid = true;
         Log.d(TAG, "checkValidation: validating user input...");
         String email = mEmail.getText().toString();

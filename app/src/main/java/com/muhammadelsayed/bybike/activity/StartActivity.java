@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.fragment.LoginFragment;
@@ -17,9 +18,12 @@ public class StartActivity extends AppCompatActivity {
     private static FragmentManager fragmentManager;
     private Context mContext = StartActivity.this;
 
+    private static final String TAG = "StartActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
@@ -36,5 +40,8 @@ public class StartActivity extends AppCompatActivity {
                     .replace(R.id.frameContainer, new LoginFragment(),
                             Utils.LoginFragment).commit();
         }
+
     }
+
+
 }

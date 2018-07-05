@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -69,13 +71,20 @@ import com.google.android.gms.tasks.Task;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.ProfileActivities.ProfileActivity;
 import com.muhammadelsayed.bybike.activity.model.Transportation;
+import com.muhammadelsayed.bybike.activity.model.User;
+import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
+import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.muhammadelsayed.bybike.activity.utils.CustomSpinnerAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
 
@@ -138,7 +147,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
+        checkUserSession();
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "onCreate: created !!");
@@ -158,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.wtf(TAG, "onMapReady() has been instantiated");
+
         if (mMap == null) {
             mMap = googleMap;
 
@@ -183,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements
      * initializes the map fragment
      */
     private void initMap() {
+        Log.wtf(TAG, "initMap() has been instantiated");
+
         Log.d(TAG, "initMap: initializing the map...");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -194,6 +210,8 @@ public class MainActivity extends AppCompatActivity implements
      * gets the required permissions from the user to access his location
      */
     private void getLocationPermission() {
+        Log.wtf(TAG, "getLocationPermission() has been instantiated");
+
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {
                 FINE_LOCATION,
@@ -215,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult: called !!");
+        Log.wtf(TAG, "onRequestPermissionsResult() has been instantiated");
         mLocationPermissionGranted = false;
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE:
@@ -244,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param placeType place type {from, to} YOU CAN SET IT TO NULL if you do not need it
      */
     private void getDeviceLocation(String placeType) {
-        Log.d(TAG, "getDeviceLocation: getting the device's current location");
+        Log.wtf(TAG, "getDeviceLocation() has been instantiated");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -329,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param placeType place type {from , to}
      */
     private void getPlaceLocation(String placeId, String placeType) {
-        Log.d(TAG, "getPlaceLocation: getting the location...");
+        Log.wtf(TAG, "getPlaceLocation() has been instantiated");
 
         if (placeId == null)
             return;
@@ -388,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param destination the location where the trip ends
      */
     private void drawRoute(LatLng origin, LatLng destination) {
+        Log.wtf(TAG, "drawRoute() has been instantiated");
 
         mMap.clear();
         markersList.clear();
@@ -396,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements
 
             MarkerOptions originOptions = new MarkerOptions()
                     .position(origin)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_origin))
                     .title("Start");
 
             markersList.add(mMap.addMarker(originOptions));
@@ -406,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 MarkerOptions destOptions = new MarkerOptions()
                         .position(destination)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination))
                         .title("End");
 
                 markersList.add(mMap.addMarker(destOptions));
@@ -441,6 +460,8 @@ public class MainActivity extends AppCompatActivity implements
      * removes all routes from map
      */
     private void ereasePolylines() {
+        Log.wtf(TAG, "ereasePolylines() has been instantiated");
+
         for (Polyline line : polylines)
             line.remove();
         polylines.clear();
@@ -448,6 +469,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRoutingFailure(RouteException e) {
+        Log.wtf(TAG, "onRoutingFailure() has been instantiated");
+
         if (e != null) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.d(TAG, "onRoutingFailure: Error: " + e.getMessage());
@@ -458,10 +481,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRoutingStart() {
+        Log.wtf(TAG, "onRoutingStart() has been instantiated");
+
     }
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+        Log.wtf(TAG, "onRoutingSuccess() has been instantiated");
 
         if (polylines.size() > 0)
             for (Polyline poly : polylines)
@@ -494,6 +520,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRoutingCancelled() {
+        Log.wtf(TAG, "onRoutingCancelled() has been instantiated");
+
     }
 
     /******************** GPS STATUS TRACKING ********************/
@@ -502,6 +530,8 @@ public class MainActivity extends AppCompatActivity implements
      * initializes GoogleApiClient object and requests the location settings to get the gps state
      */
     private void mEnableGps() {
+        Log.wtf(TAG, "mEnableGps() has been instantiated");
+
         mGoogleApiClient = new GoogleApiClient.Builder(mContext)
                 .addApi(LocationServices.API).addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -514,6 +544,8 @@ public class MainActivity extends AppCompatActivity implements
      * requests the location settings to get the gps state
      */
     private void mLocationSetting() {
+        Log.wtf(TAG, "mLocationSetting() has been instantiated");
+
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(5000);
@@ -526,6 +558,8 @@ public class MainActivity extends AppCompatActivity implements
      * gets the gps state and prompts the user to open the GPS
      */
     private void mResult() {
+        Log.wtf(TAG, "mResult() has been instantiated");
+
         pendingResult = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, mLocationSettingsRequest.build());
         pendingResult.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
@@ -562,6 +596,8 @@ public class MainActivity extends AppCompatActivity implements
     //callback method
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.wtf(TAG, "onActivityResult() has been instantiated");
+
         final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode) {
             case REQUEST_LOCATION:
@@ -586,14 +622,20 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.wtf(TAG, "onConnected() has been instantiated");
+
     }
 
     @Override
     public void onConnectionSuspended(int i) {
+        Log.wtf(TAG, "onConnectionSuspended() has been instantiated");
+
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.wtf(TAG, "onConnectionFailed() has been instantiated");
+
     }
 
 
@@ -602,6 +644,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onResume() {
+        Log.wtf(TAG, "onResume() has been instantiated");
+
         super.onResume();
         navigationView = findViewById(R.id.nav_view);
 
@@ -625,6 +669,8 @@ public class MainActivity extends AppCompatActivity implements
      * sets up all activity widgets
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
+
         mContext = MainActivity.this;
 
         toolbar = findViewById(R.id.toolbar);
@@ -718,6 +764,7 @@ public class MainActivity extends AppCompatActivity implements
      * shows the layout to allow the user to submit or cancel the order he made
      */
     private void showSubmitLayout() {
+        Log.wtf(TAG, "showSubmitLayout() has been instantiated");
 
         transportations.get(0).setTransType("Bicycle");
         transportations.get(1).setTransType("Motorcycle");
@@ -775,6 +822,7 @@ public class MainActivity extends AppCompatActivity implements
      * resets everything to its default
      */
     private void resetActivity() {
+        Log.wtf(TAG, "resetActivity() has been instantiated");
 
         submitLayout.setVisibility(View.GONE);
         ereasePolylines();
@@ -792,6 +840,7 @@ public class MainActivity extends AppCompatActivity implements
      * sets up the NavigationView
      */
     private void setUpNavigationView() {
+        Log.wtf(TAG, "setUpNavigationView() has been instantiated");
 
         // Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -839,5 +888,48 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /******************** SESSION ********************/
+    private void checkUserSession() {
+        Log.wtf(TAG, "checkUserSession() has been instantiated");
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final String token = prefs.getString("USER_TOKEN", "");
+        if (!token.equals("")) {
+
+            User user = new User();
+            user.setApi_token(token);
+
+            UserClient service = RetrofitClientInstance.getRetrofitInstance()
+                    .create(UserClient.class);
+            Call<UserModel> call = service.getUserInfo(user);
+            call.enqueue(new Callback<UserModel>() {
+                @Override
+                public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
+
+                    if (response.body() != null) {
+                        Log.d(TAG, "onResponse: " + currentUser);
+
+                        if (!token.equals(response.body().getUser().getApi_token())) {
+                            startActivity(new Intent(MainActivity.this, StartActivity.class));
+                            finish();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserModel> call, Throwable t) {
+
+                    startActivity(new Intent(MainActivity.this, StartActivity.class));
+                    finish();
+
+                }
+            });
+        } else {
+
+            startActivity(new Intent(MainActivity.this, StartActivity.class));
+            finish();
+        }
+    }
 
 }

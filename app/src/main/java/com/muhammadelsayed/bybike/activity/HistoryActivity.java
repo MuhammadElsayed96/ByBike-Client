@@ -21,6 +21,8 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         Log.d(TAG, "onCreate: started !!");
@@ -36,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
      * sets up all the widgets in this library
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
 
         mContext = getApplicationContext();
 
@@ -48,6 +51,8 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
+
         switch (item.getItemId()) {
             case android.R.id.home :
                 onBackPressed();

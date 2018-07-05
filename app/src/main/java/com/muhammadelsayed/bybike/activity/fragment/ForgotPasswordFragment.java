@@ -3,6 +3,7 @@ package com.muhammadelsayed.bybike.activity.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,13 @@ public class ForgotPasswordFragment extends Fragment implements View.OnClickList
     private TextView submit, back;
     private static FragmentManager fragmentManager;
 
-
+    private static final String TAG = "ForgotPasswordFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.wtf(TAG, "onCreateView() has been instantiated");
 
         view = inflater.inflate(R.layout.forgotpassword_layout, container,false);
         initViews();
@@ -40,6 +43,8 @@ public class ForgotPasswordFragment extends Fragment implements View.OnClickList
 
     // Initialize the views
     private void initViews() {
+        Log.wtf(TAG, "initViews() has been instantiated");
+
         mEmail = view.findViewById(R.id.registered_emailid);
         submit = view.findViewById(R.id.forgot_button);
         back = view.findViewById(R.id.backToLoginBtn);
@@ -50,12 +55,16 @@ public class ForgotPasswordFragment extends Fragment implements View.OnClickList
 
     // Set Listeners over buttons
     private void setListeners() {
+        Log.wtf(TAG, "setListeners() has been instantiated");
+
         back.setOnClickListener(this);
         submit.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        Log.wtf(TAG, "onClick() has been instantiated");
+
         switch (v.getId()) {
             case R.id.backToLoginBtn:
 
@@ -79,6 +88,8 @@ public class ForgotPasswordFragment extends Fragment implements View.OnClickList
     }
 
     private void submitButtonTask() {
+        Log.wtf(TAG, "submitButtonTask() has been instantiated");
+
         String email = mEmail.getText().toString();
 
         // Pattern for email id validation

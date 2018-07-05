@@ -48,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
@@ -60,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
      * sets up all activity widgets
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,6 +108,8 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout.OnClickListener mOnLlEditFirstnameClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.wtf(TAG, "mOnLlEditFirstnameClickListener() has been instantiated");
+
             Intent firstnameIntent = new Intent(getApplicationContext(), EditFirstnameActivity.class);
             firstnameIntent.putExtra("firstname", mFirstname.getText());
             firstnameIntent.putExtra("current_user", currentUser);
@@ -114,6 +119,8 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout.OnClickListener mOnLlEditLastnameClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.wtf(TAG, "mOnLlEditLastnameClickListener() has been instantiated");
+
             Intent lastnameIntent = new Intent(getApplicationContext(), EditLastnameActivity.class);
             lastnameIntent.putExtra("lastname", mLastname.getText());
             startActivity(lastnameIntent);
@@ -122,6 +129,8 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout.OnClickListener mOnLlEditPhoneClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.wtf(TAG, "mOnLlEditPhoneClickListener() has been instantiated");
+
             Intent phoneIntent = new Intent(getApplicationContext(), EditPhoneActivity.class);
             phoneIntent.putExtra("phone", mPhone.getText());
             startActivity(phoneIntent);
@@ -130,6 +139,8 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout.OnClickListener mOnLlEditPasswordClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.wtf(TAG, "mOnLlEditPasswordClickListener() has been instantiated");
+
             startActivity(new Intent(getApplicationContext(), EditPasswordActivity.class));
         }
     };
@@ -137,6 +148,8 @@ public class ProfileActivity extends AppCompatActivity {
     private RelativeLayout.OnClickListener mOnRlProfileImageClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.wtf(TAG, "mOnRlProfileImageClickListener() has been instantiated");
+
 
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
@@ -164,6 +177,8 @@ public class ProfileActivity extends AppCompatActivity {
      * @return the real path of that uri
      */
     private String getRealPathFromURI(Uri uri) {
+        Log.wtf(TAG, "getRealPathFromURI() has been instantiated");
+
         String filePath = "";
         if (uri.getHost().contains("com.android.providers.media")) {
             // Image pick from recent
@@ -198,6 +213,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.wtf(TAG, "onActivityResult() has been instantiated");
 
         if (requestCode == INTENT_REQUEST_CODE) {
 
@@ -257,6 +273,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         if (item.getItemId() == android.R.id.home)
             onBackPressed();
