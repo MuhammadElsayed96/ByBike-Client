@@ -33,6 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.ConfirmOrderActivity.currentOrder;
 
 public class WaitingActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class WaitingActivity extends AppCompatActivity {
     private ValueEventListener mStatusChangedListener;
 
 
-    private Order currentOrder;
+//    private Order currentOrder;
 
     private Button btnCancelOrder;
 
@@ -58,16 +59,16 @@ public class WaitingActivity extends AppCompatActivity {
         setupProgressBar();
 
 
-        if (getIntent() != null) {
-            currentOrder = (Order) getIntent().getSerializableExtra("currentOrder");
-        }
+//        if (getIntent() != null) {
+//            currentOrder = (Order) getIntent().getSerializableExtra("currentOrder");
+//        }
 
-        refOrders = FirebaseDatabase.getInstance().getReference("orders");
+        refOrders = FirebaseDatabase.getInstance().getReference("orders").child(String.valueOf(currentOrder.getId()));
 
         mStatusChangedListener = refOrders.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long status = (long) dataSnapshot.child(String.valueOf(currentOrder.getId())).child("status").getValue();
+                long status = (long) dataSnapshot.child("status").getValue();
 
                 Log.wtf(TAG, "STATUS = " + status);
 
@@ -75,7 +76,7 @@ public class WaitingActivity extends AppCompatActivity {
 
 
                     Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
-                    intent.putExtra("currentOrder", currentOrder);
+//                    intent.putExtra("currentOrder", currentOrder);
                     startActivity(intent);
                     refOrders.removeEventListener(mStatusChangedListener);
                     finish();

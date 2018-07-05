@@ -124,7 +124,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                             Toast.makeText(ConfirmOrderActivity.this, "Succeeded", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(mContext, WaitingActivity.class);
-                            intent.putExtra("currentOrder", currentOrder);
+//                            intent.putExtra("currentOrder", currentOrder);
                             startActivity(intent);
 
                         } else {
