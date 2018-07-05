@@ -3,6 +3,7 @@ package com.muhammadelsayed.bybike.activity.ProfileActivities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +37,7 @@ public class EditEmailActivity extends AppCompatActivity {
      * sets up all activity widgets
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,6 +58,7 @@ public class EditEmailActivity extends AppCompatActivity {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         if (item.getItemId() == android.R.id.home)
             onBackPressed();

@@ -2,7 +2,24 @@ package com.muhammadelsayed.bybike.activity.model;
 
 public class RetroResponse {
     private String message;
-    private boolean status;
+    private Order order;
+
+    public RetroResponse(String message, Order order) {
+        this.message = message;
+        this.order = order;
+    }
+
+    public RetroResponse() {
+    }
+
+
+    @Override
+    public String toString() {
+        return "RetroResponse{" +
+                "message='" + message + '\'' +
+                ", order=" + order +
+                '}';
+    }
 
     public String getMessage() {
         return message;
@@ -12,27 +29,13 @@ public class RetroResponse {
         this.message = message;
     }
 
-    public boolean isStatus() {
-        return status;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
-    public RetroResponse() {
-    }
 
-    public RetroResponse(String message, boolean status) {
-        this.message = message;
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "RetroResponse{" +
-                "message='" + message + '\'' +
-                ", status=" + status +
-                '}';
-    }
 }

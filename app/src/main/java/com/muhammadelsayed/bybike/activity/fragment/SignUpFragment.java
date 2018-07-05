@@ -51,6 +51,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreateView() has been instantiated");
+
         view = inflater.inflate(R.layout.signup_layout, container, false);
         initViews();
         setListeners();
@@ -58,6 +60,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initViews() {
+        Log.wtf(TAG, "initViews() has been instantiated");
+
         Log.d(TAG, "initViews: initializing the view...");
         mFullName = view.findViewById(R.id.singup_fullname);
         mEmail = view.findViewById(R.id.signup_email);
@@ -73,12 +77,16 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     // Set Listeners
     private void setListeners() {
+        Log.wtf(TAG, "setListeners() has been instantiated");
+
         signUpButton.setOnClickListener(this);
         login.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        Log.wtf(TAG, "onClick() has been instantiated");
+
         switch (v.getId()) {
             case R.id.signUpBtn:
 
@@ -103,28 +111,27 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
                     Call<SignupResponse> call = service.signupUser(currentUser);
 
-
                     call.enqueue(new Callback<SignupResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<SignupResponse> call, Response<SignupResponse> response) {
 
                             if (response.body() != null) {
+                                if (response.body().getToken() != null) {
+                                    Log.d(TAG, "onResponse: == " + response.body());
+                                    Snackbar.make(view, "Signed up successfully", Snackbar.LENGTH_SHORT).show();
 
-                                Log.d(TAG, "onResponse: == " + response.body());
-                                Snackbar.make(view, "Signed up successfully", Snackbar.LENGTH_SHORT).show();
-
-                                // Replace login fragment
-                                fragmentManager
-                                        .beginTransaction()
-                                        .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
-                                        .replace(R.id.frameContainer,
-                                                new LoginFragment(),
-                                                Utils.LoginFragment).commit();
-
+                                    // Replace login fragment
+                                    fragmentManager
+                                            .beginTransaction()
+                                            .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                                            .replace(R.id.frameContainer,
+                                                    new LoginFragment(),
+                                                    Utils.LoginFragment).commit();
+                                } else {
+                                        
+                                }
                             } else {
-
                                 Toast.makeText(getActivity(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
-
                             }
 
                             progressDialog.dismiss();
@@ -158,6 +165,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     // Check Validation Method
     private boolean checkValidation() {
+        Log.wtf(TAG, "checkValidation() has been instantiated");
 
         boolean isValid = true;
 
@@ -191,6 +199,13 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             new CustomToast().showToast(getActivity(), view,
                     "Your Email Id is Invalid.");
         }
+
+        else if (phoneNumber.length() < 11) {
+            isValid = false;
+            new CustomToast().showToast(getActivity(), view,
+                    "Your Phone Number is Invalid.");
+        }
+
         // Check if both password should be equal
         else if (!confirmPassword.equals(password)) {
 

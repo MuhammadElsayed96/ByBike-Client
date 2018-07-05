@@ -34,6 +34,8 @@ public class EditPhoneActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_phone);
 
@@ -49,6 +51,7 @@ public class EditPhoneActivity extends AppCompatActivity {
      * sets up all activity widgets
      */
     private void setupWidgets() {
+        Log.wtf(TAG, "setupWidgets() has been instantiated");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,6 +71,7 @@ public class EditPhoneActivity extends AppCompatActivity {
     }
 
     private void updateUser() {
+        Log.wtf(TAG, "updateUser() has been instantiated");
 
         if (checkValidation()) {
 //
@@ -121,6 +125,7 @@ public class EditPhoneActivity extends AppCompatActivity {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         if (item.getItemId() == android.R.id.home)
             onBackPressed();

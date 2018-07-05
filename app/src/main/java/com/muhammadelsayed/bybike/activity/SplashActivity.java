@@ -14,6 +14,8 @@ import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,24 +28,22 @@ public class SplashActivity extends AppCompatActivity {
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.wtf(TAG, "onCreate() has been instantiated");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        checkUserSession();
+
+        Log.d(TAG, "onCreate: Current User After = " + currentUser);
+    }
+
+    private void checkUserSession() {
+        Log.wtf(TAG, "checkUserSession() has been instantiated");
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         String token = prefs.getString("USER_TOKEN", "");
-
-        Log.d(TAG, "onCreate: TOKEN = " + token);
-        Log.d(TAG, "onCreate: Current User Before = " + currentUser);
-
-        checkUserSession(token);
-
-        Log.d(TAG, "onCreate: Current User After = " + currentUser);
-
-    }
-
-
-    private void checkUserSession(String token) {
-
         if (!token.equals("")) {
 
             User user = new User();
@@ -52,6 +52,7 @@ public class SplashActivity extends AppCompatActivity {
             UserClient service = RetrofitClientInstance.getRetrofitInstance()
                     .create(UserClient.class);
             Call<UserModel> call = service.getUserInfo(user);
+
             call.enqueue(new Callback<UserModel>() {
                 @Override
                 public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
@@ -63,10 +64,8 @@ public class SplashActivity extends AppCompatActivity {
 
                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
                         finish();
-
                     }
                 }
-
 
                 @Override
                 public void onFailure(Call<UserModel> call, Throwable t) {
