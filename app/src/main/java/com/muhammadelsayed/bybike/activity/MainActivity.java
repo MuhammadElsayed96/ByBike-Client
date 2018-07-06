@@ -192,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
     /**
      * initializes the map fragment
      */

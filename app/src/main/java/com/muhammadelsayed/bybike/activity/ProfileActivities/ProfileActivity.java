@@ -1,11 +1,17 @@
 package com.muhammadelsayed.bybike.activity.ProfileActivities;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +28,7 @@ import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
+import com.muhammadelsayed.bybike.activity.utils.RealPathUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -38,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
     private static final int INTENT_REQUEST_CODE = 100;
+    private static final int REQUEST_STORAGE_PERMISSION = 200;
 
     private LinearLayout mLlEditLastname, mLlEditFirstname, mLlEditPhone, mLlEditEmail, mLlEditPassword;
     private RelativeLayout mRlProfileImage;
@@ -150,64 +158,49 @@ public class ProfileActivity extends AppCompatActivity {
         public void onClick(View v) {
             Log.wtf(TAG, "mOnRlProfileImageClickListener() has been instantiated");
 
-
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
 
-            try {
-                startActivityForResult(intent, INTENT_REQUEST_CODE);
 
-            } catch (ActivityNotFoundException e) {
-
-                e.printStackTrace();
+            if (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+                }
+            }
+            else
+            {
+                try {
+                    startActivityForResult(intent, INTENT_REQUEST_CODE);
+                } catch (ActivityNotFoundException e) {
+                    Log.d(TAG, "onClick: ActivityNotFoundException !!!!!!!!!!!");
+                    e.printStackTrace();
+                }
             }
 
         }
     };
 
 
-    /**
-     * Gets the real file path of the Uri because the built in method 'uri.getPath' is truly fucked.
-     * Wasted an entire day to do only that :'(
-     * I hate my life :)
-     *
-     * ref : https://stackoverflow.com/questions/2789276/android-get-real-path-by-uri-getpath
-     *
-     * @param uri The uri of the file.
-     * @return the real path of that uri
-     */
-    private String getRealPathFromURI(Uri uri) {
-        Log.wtf(TAG, "getRealPathFromURI() has been instantiated");
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 200 :
 
-        String filePath = "";
-        if (uri.getHost().contains("com.android.providers.media")) {
-            // Image pick from recent
-            String wholeID = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                wholeID = DocumentsContract.getDocumentId(uri);
-            }
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-            // Split at colon, use second item in the array
-            String id = wholeID.split(":")[1];
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
 
-            String[] column = {MediaStore.Images.Media.DATA};
+                    try {
+                        startActivityForResult(intent, INTENT_REQUEST_CODE);
+                    } catch (ActivityNotFoundException e) {
+                        Log.d(TAG, "onClick: ActivityNotFoundException !!!!!!!!!!!");
+                        e.printStackTrace();
+                    }
+                }
 
-            // where id is equal to
-            String sel = MediaStore.Images.Media._ID + "=?";
-
-            Cursor cursor = this.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    column, sel, new String[]{id}, null);
-
-            int columnIndex = cursor.getColumnIndex(column[0]);
-
-            if (cursor.moveToFirst()) {
-                filePath = cursor.getString(columnIndex);
-            }
-            cursor.close();
-            return filePath;
-        } else {
-            // image pick from gallery
-            return  getRealPathFromURI(uri);
+                break;
         }
     }
 
@@ -219,56 +212,61 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
+                Log.d(TAG, "onActivityResult: ");
+
                 Uri uri = data.getData();
-                Log.d(TAG, "onActivityResult: URI = " + uri);
 
-                File imageFile = new File(getRealPathFromURI(uri));
+                String path = RealPathUtil.getRealPath(getApplicationContext(), uri);
+                if (path != null) {
 
-                RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+                    File imageFile = new File(RealPathUtil.getRealPath(getApplicationContext(), uri));
 
-                MultipartBody.Part body = MultipartBody.Part.createFormData("photo", imageFile.getName(), requestFile);
-                RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, currentUser.getUser().getApi_token());
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
 
-                UserClient service = RetrofitClientInstance.getRetrofitInstance()
-                        .create(UserClient.class);
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("photo", imageFile.getName(), requestFile);
+                    RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, currentUser.getUser().getApi_token());
 
-                Call<UserModel> call = service.updateUserProfileImage(token, body);
+                    UserClient service = RetrofitClientInstance.getRetrofitInstance()
+                            .create(UserClient.class);
 
-                call.enqueue(new Callback<UserModel>() {
-                    @Override
-                    public void onResponse(Call<UserModel> call, retrofit2.Response<UserModel> response) {
+                    Call<UserModel> call = service.updateUserProfileImage(token, body);
 
-                        if (response.isSuccessful()) {
-                            if(response.body() != null) {
-                                currentUser.setUser(response.body().getUser());
-                                Log.d(TAG, "onResponse: " + response.body());
-                                Picasso.get()
-                                        .load(RetrofitClientInstance.BASE_URL + response.body().getUser().getImage())
-                                        .error(R.mipmap.icon_launcher)
-                                        .into(mProfileImage);
-                                Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                    call.enqueue(new Callback<UserModel>() {
+                        @Override
+                        public void onResponse(Call<UserModel> call, retrofit2.Response<UserModel> response) {
+
+                            if (response.isSuccessful()) {
+                                if (response.body() != null) {
+                                    currentUser.setUser(response.body().getUser());
+                                    Log.d(TAG, "onResponse: " + response.body());
+                                    Picasso.get()
+                                            .load(RetrofitClientInstance.BASE_URL + response.body().getUser().getImage())
+                                            .error(R.mipmap.icon_launcher)
+                                            .into(mProfileImage);
+                                    Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
+                                }
                             } else {
-                                Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
+                                Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<UserModel> call, Throwable t) {
 
-                        Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
-                        Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
+                            Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
 
-                    }
-                });
-
-
-
+                        }
+                    });
+                } else {
+                    Toast.makeText(this, "This image cannot be selected", Toast.LENGTH_SHORT).show();
+                }
             }
 
         }
+
     }
 
     @Override
