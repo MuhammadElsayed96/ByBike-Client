@@ -1,5 +1,6 @@
 package com.muhammadelsayed.bybike.activity.network;
 
+import com.muhammadelsayed.bybike.activity.model.HistoryModel;
 import com.muhammadelsayed.bybike.activity.model.SignupResponse;
 import com.muhammadelsayed.bybike.activity.model.User;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
@@ -33,5 +34,8 @@ public interface UserClient {
 
     @POST("api/user/info")
     Call<UserModel> getUserInfo(@Body User user);
+
+    @POST("api/user/trip")
+    Call<HistoryModel> getHistory(@Body String api_token);
 
 }

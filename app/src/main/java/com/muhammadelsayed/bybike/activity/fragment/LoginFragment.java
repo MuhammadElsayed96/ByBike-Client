@@ -42,11 +42,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
+
+
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "LoginFragment";
 
-    public static UserModel currentUser;
 
     private View view;
     private EditText mEmail, mPassword;
@@ -156,20 +158,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
 
                             if (response.body() != null) {
+                                if (response.body().getToken() != null) {
+                                    currentUser = response.body();
+                                    currentUser.getUser().setApi_token(response.body().getToken());
+                                    Log.d(TAG, "onResponse: " + currentUser);
+                                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                                    startActivity(intent);
 
-                                currentUser = response.body();
-                                currentUser.getUser().setApi_token(response.body().getToken());
-                                Log.d(TAG, "onResponse: " + response.body());
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
-//                                intent.putExtra("current_user", currentUser);
-                                startActivity(intent);
+                                    SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                                    prefEditor.putString("USER_TOKEN", response.body().getToken());
+                                    prefEditor.apply();
 
-                                SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-                                prefEditor.putString("USER_TOKEN", response.body().getToken());
-                                prefEditor.apply();
-
-                                getActivity().finish();
-
+                                    getActivity().finish();
+                                } else {
+                                    Toast.makeText(getActivity(), "Wrong email or password", Toast.LENGTH_SHORT).show();
+                                }
                             } else {
 
                                 Toast.makeText(getActivity(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();

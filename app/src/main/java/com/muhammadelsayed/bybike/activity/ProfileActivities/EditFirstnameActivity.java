@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.MainActivity;
+import com.muhammadelsayed.bybike.activity.StartActivity;
+import com.muhammadelsayed.bybike.activity.WaitingActivity;
 import com.muhammadelsayed.bybike.activity.fragment.LoginFragment;
 import com.muhammadelsayed.bybike.activity.model.User;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
@@ -27,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 
 public class EditFirstnameActivity extends AppCompatActivity {
 
@@ -40,6 +42,8 @@ public class EditFirstnameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.checkUserSession(EditFirstnameActivity.this);
+
         setContentView(R.layout.activity_edit_firstname);
         Log.wtf(TAG, "onCreate() has been instantiated");
 
@@ -117,7 +121,11 @@ public class EditFirstnameActivity extends AppCompatActivity {
                 public void onFailure(Call<UserModel> call, Throwable t) {
 
 //                    progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "network error !!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "logging out !!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(EditFirstnameActivity.this, StartActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }

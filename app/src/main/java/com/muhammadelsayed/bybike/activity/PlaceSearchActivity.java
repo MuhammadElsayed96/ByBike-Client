@@ -38,6 +38,7 @@ import com.muhammadelsayed.bybike.activity.model.User;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 
 public class PlaceSearchActivity extends AppCompatActivity {
 
@@ -110,7 +111,7 @@ public class PlaceSearchActivity extends AppCompatActivity {
         Log.wtf(TAG, "onCreate() has been instantiated");
 
         super.onCreate(savedInstanceState);
-        checkUserSession();
+        Utils.checkUserSession(PlaceSearchActivity.this);
         setContentView(R.layout.place_search_activity);
 
 
@@ -502,45 +503,6 @@ public class PlaceSearchActivity extends AppCompatActivity {
         searchTo.setQuery(getIntent().getStringExtra("SEARCH_TO"), false);
 
     }
-
-
-
-    /******************** SESSION ********************/
-    private void checkUserSession() {
-        Log.wtf(TAG, "checkUserSession() has been instantiated");
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final String token = prefs.getString("USER_TOKEN", "");
-        if (!token.equals("")) {
-
-            User user = new User();
-            user.setApi_token(token);
-            UserClient service = RetrofitClientInstance.getRetrofitInstance()
-                    .create(UserClient.class);
-            Call<UserModel> call = service.getUserInfo(user);
-            call.enqueue(new Callback<UserModel>() {
-                @Override
-                public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
-                    if (response.body() != null) {
-                        Log.d(TAG, "onResponse: " + currentUser);
-                        if (!token.equals(response.body().getUser().getApi_token())) {
-                            startActivity(new Intent(PlaceSearchActivity.this, StartActivity.class));
-                            finish();
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<UserModel> call, Throwable t) {
-                    startActivity(new Intent(PlaceSearchActivity.this, StartActivity.class));
-                    finish();
-                }
-            });
-        } else {
-            startActivity(new Intent(PlaceSearchActivity.this, StartActivity.class));
-            finish();
-        }
-    }
-
 
 
 }

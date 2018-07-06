@@ -1,5 +1,6 @@
 package com.muhammadelsayed.bybike.activity.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -36,6 +37,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<Transportation> {
 
 
 
+    @SuppressLint("SetTextI18n")
     private View createItemView(int position, View convertView, ViewGroup parent){
 
         final View view = mInflater.inflate(mResource, parent, false);
@@ -48,7 +50,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<Transportation> {
         Transportation transData = trans.get(position);
 
         txtTrans.setText(transData.getTransType());
-        txtCost.setText(transData.getTransCost());
+        txtCost.setText(transData.getTransCost() + " L.E.");
         txtDistance.setText(transData.getTransDistance());
         imgTrans.setImageResource(transData.getTransImg());
 

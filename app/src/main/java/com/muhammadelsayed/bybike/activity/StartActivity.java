@@ -27,10 +27,6 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userToken = pref.getString("USER_TOKEN", "USER_NOT_FOUND");
-
-
         fragmentManager = getSupportFragmentManager();
 
         // If savedinstnacestate is null then replace login fragment

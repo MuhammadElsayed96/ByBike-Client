@@ -27,12 +27,13 @@ import com.muhammadelsayed.bybike.activity.model.RetroResponse;
 import com.muhammadelsayed.bybike.activity.model.TripModel;
 import com.muhammadelsayed.bybike.activity.network.OrderClient;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 import static com.muhammadelsayed.bybike.activity.ConfirmOrderActivity.currentOrder;
 
 public class WaitingActivity extends AppCompatActivity {
@@ -53,15 +54,13 @@ public class WaitingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.checkUserSession(WaitingActivity.this);
         setContentView(R.layout.activity_waiting);
         Log.wtf(TAG, "onCreate() has been instantiated");
 
         setupProgressBar();
 
-
-//        if (getIntent() != null) {
-//            currentOrder = (Order) getIntent().getSerializableExtra("currentOrder");
-//        }
+        setupWidgets();
 
         refOrders = FirebaseDatabase.getInstance().getReference("orders").child(String.valueOf(currentOrder.getId()));
 
@@ -78,8 +77,15 @@ public class WaitingActivity extends AppCompatActivity {
                     Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
 //                    intent.putExtra("currentOrder", currentOrder);
                     startActivity(intent);
-                    refOrders.removeEventListener(mStatusChangedListener);
                     finish();
+                    refOrders.removeEventListener(mStatusChangedListener);
+                } else if (status == 5) {
+                    Toast.makeText(WaitingActivity.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
+                    Log.wtf(TAG, "STATUS = Canceled By User");
+//                    Intent intent = new Intent(WaitingActivity.this, ConfirmOrderActivity.class);
+//                    startActivity(intent);
+                    finish();
+                    refOrders.removeEventListener(mStatusChangedListener);
                 }
             }
 
@@ -88,6 +94,7 @@ public class WaitingActivity extends AppCompatActivity {
                 Log.wtf(TAG, "onCancelled()");
             }
         });
+
 
 
     }
@@ -112,9 +119,34 @@ public class WaitingActivity extends AppCompatActivity {
                 OrderClient service = RetrofitClientInstance.getRetrofitInstance()
                         .create(OrderClient.class);
 
-                TripModel tripModel = new TripModel();
-                tripModel.setApi_token(currentUser.getToken());
-                tripModel.setOrder(currentOrder.getUuid());
+                TripModel trip = new TripModel(currentUser.getToken(), currentOrder.getUuid());
+
+                Log.d(TAG, "currentUser: " + currentUser);
+
+                Call<RetroResponse> call = service.cancelOrder(trip);
+
+                call.enqueue(new Callback<RetroResponse>() {
+                    @Override
+                    public void onResponse(Call<RetroResponse> call, Response<RetroResponse> response) {
+
+                        if(response.body() != null) {
+
+                            Log.d(TAG, "onResponse: " + response.body().getMessage());
+                            Toast.makeText(WaitingActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RetroResponse> call, Throwable t) {
+
+                        Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
+                        Toast.makeText(WaitingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
 
 
             }

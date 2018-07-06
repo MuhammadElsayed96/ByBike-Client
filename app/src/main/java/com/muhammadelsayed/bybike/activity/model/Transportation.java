@@ -1,11 +1,19 @@
 package com.muhammadelsayed.bybike.activity.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Transportation {
 
+    private int id;
+    private String created_at;
+    private String updated_at;
+    @SerializedName("type")
     private String transType;
+    @SerializedName("price")
+    private int transCost;
     private int transImg;
-    private String transCost;
     private String transDistance;
+
 
 
 
@@ -25,11 +33,11 @@ public class Transportation {
         this.transImg = transImg;
     }
 
-    public String getTransCost() {
+    public int getTransCost() {
         return transCost;
     }
 
-    public void setTransCost(String transCost) {
+    public void setTransCost(int transCost) {
         this.transCost = transCost;
     }
 
@@ -44,7 +52,7 @@ public class Transportation {
     public Transportation() {
     }
 
-    public Transportation(String transType, int transImg, String transCost, String transDistance) {
+    public Transportation(String transType, int transImg, int transCost, String transDistance) {
         this.transType = transType;
         this.transImg = transImg;
         this.transCost = transCost;

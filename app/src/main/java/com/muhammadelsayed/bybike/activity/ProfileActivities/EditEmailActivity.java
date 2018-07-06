@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.WaitingActivity;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 
 public class EditEmailActivity extends AppCompatActivity {
 
@@ -24,6 +26,7 @@ public class EditEmailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_email);
+        Utils.checkUserSession(EditEmailActivity.this);
 
 
         // initializing activity widgets

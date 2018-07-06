@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -22,8 +23,9 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.wtf(TAG, "onCreate() has been instantiated");
-
         super.onCreate(savedInstanceState);
+        Utils.checkUserSession(HistoryActivity.this);
+
         setContentView(R.layout.activity_history);
         Log.d(TAG, "onCreate: started !!");
 
