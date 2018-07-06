@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.StartActivity;
+import com.muhammadelsayed.bybike.activity.WaitingActivity;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
@@ -22,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 
 public class EditPhoneActivity extends AppCompatActivity {
 
@@ -37,6 +39,8 @@ public class EditPhoneActivity extends AppCompatActivity {
         Log.wtf(TAG, "onCreate() has been instantiated");
 
         super.onCreate(savedInstanceState);
+        Utils.checkUserSession(EditPhoneActivity.this);
+
         setContentView(R.layout.activity_edit_phone);
 
 
@@ -112,8 +116,11 @@ public class EditPhoneActivity extends AppCompatActivity {
                 public void onFailure(Call<UserModel> call, Throwable t) {
 
 //                    progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "network error !!", Toast.LENGTH_SHORT).show();
-                }
+                    Toast.makeText(getApplicationContext(), "logging out !!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(EditPhoneActivity.this, StartActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();                }
             });
         }
 

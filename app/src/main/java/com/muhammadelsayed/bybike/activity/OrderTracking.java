@@ -50,6 +50,7 @@ import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.OrderClient;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 import static com.muhammadelsayed.bybike.activity.ConfirmOrderActivity.currentOrder;
 
 
@@ -95,9 +96,14 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.wtf(TAG, "onCreate() has been instantiated");
-
         super.onCreate(savedInstanceState);
+        Utils.checkUserSession(OrderTracking.this);
+
         setContentView(R.layout.activity_order_tracking);
+        txtRiderName = findViewById(R.id.rider_name_textview);
+        riderProfilePhoto = findViewById(R.id.rider_profile_image);
+        btnCallRider = findViewById(R.id.call_rider_button);
+        btnCancelTrip = findViewById(R.id.cancel_trip_btn);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -126,8 +132,8 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                     Log.wtf(TAG, "STATUS = Canceled By User");
                     Intent intent = new Intent(OrderTracking.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                     refOrders.removeEventListener(mStatusChangedListener);
-//                    finish();
                 }
 
                 if (status == 4) {
@@ -136,14 +142,17 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                     Log.wtf(TAG, "STATUS = Canceled By Rider");
                     Intent intent = new Intent(OrderTracking.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                     refOrders.removeEventListener(mStatusChangedListener);
-//                    finish();
                 } else if (status == 3) {
                     Toast.makeText(OrderTracking.this, "Received !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Received");
                 } else if (status == 2) {
                     Toast.makeText(OrderTracking.this, "Approved !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Approved");
+
+                    btnCancelTrip.setVisibility(View.GONE);
+
                 } else if (status == 1) {
                     Toast.makeText(OrderTracking.this, "Accepted !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Accepted");
@@ -163,21 +172,16 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
     private void setupWidgets() {
         Log.e(TAG, "setupWidgets() has been instantiated");
 
-        // setting up widgets
-        txtRiderName = findViewById(R.id.rider_name_textview);
         txtRiderName.setText(orderInfo.getTransporter().getName());
 
-        riderProfilePhoto = findViewById(R.id.rider_profile_image);
         Picasso.get()
                 .load(RetrofitClientInstance.BASE_URL + orderInfo.getTransporter().getImage())
                 .placeholder(R.mipmap.icon_launcher)
                 .error(R.mipmap.icon_launcher)
                 .into(riderProfilePhoto);
 
-        btnCallRider = findViewById(R.id.call_rider_button);
         btnCallRider.setOnClickListener(btnCallRiderListener);
 
-        btnCancelTrip = findViewById(R.id.cancel_trip_btn);
         btnCancelTrip.setOnClickListener(btnCancelTripListener);
 
     }
@@ -202,7 +206,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                     if(response.body() != null) {
 
                         Log.d(TAG, "onResponse: " + response.body().getMessage());
-                        setupWidgets();
+                        Toast.makeText(OrderTracking.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                     } else {
                         Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());

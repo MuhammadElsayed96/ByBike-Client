@@ -76,6 +76,7 @@ import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.muhammadelsayed.bybike.activity.utils.CustomSpinnerAdapter;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
         Log.wtf(TAG, "onCreate() has been instantiated");
 
         super.onCreate(savedInstanceState);
-        checkUserSession();
+        Utils.checkUserSession(MainActivity.this);
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "onCreate: created !!");
@@ -771,9 +772,9 @@ public class MainActivity extends AppCompatActivity implements
         transportations.get(0).setTransImg(R.drawable.ic_bike);
         transportations.get(1).setTransImg(R.drawable.ic_motorcycle);
         transportations.get(2).setTransImg(R.drawable.ic_car);
-        transportations.get(0).setTransCost("12 L.E.");
-        transportations.get(1).setTransCost("18 L.E.");
-        transportations.get(2).setTransCost("25 L.E.");
+        transportations.get(0).setTransCost(10);
+        transportations.get(1).setTransCost(18);
+        transportations.get(2).setTransCost(24);
 
         submitLayout.setVisibility(View.VISIBLE);
 
@@ -887,48 +888,5 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    /******************** SESSION ********************/
-    private void checkUserSession() {
-        Log.wtf(TAG, "checkUserSession() has been instantiated");
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        final String token = prefs.getString("USER_TOKEN", "");
-        if (!token.equals("")) {
-
-            User user = new User();
-            user.setApi_token(token);
-
-            UserClient service = RetrofitClientInstance.getRetrofitInstance()
-                    .create(UserClient.class);
-            Call<UserModel> call = service.getUserInfo(user);
-            call.enqueue(new Callback<UserModel>() {
-                @Override
-                public void onResponse(@NonNull Call<UserModel> call, Response<UserModel> response) {
-
-                    if (response.body() != null) {
-                        Log.d(TAG, "onResponse: " + currentUser);
-
-                        if (!token.equals(response.body().getUser().getApi_token())) {
-                            startActivity(new Intent(MainActivity.this, StartActivity.class));
-                            finish();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UserModel> call, Throwable t) {
-
-                    startActivity(new Intent(MainActivity.this, StartActivity.class));
-                    finish();
-
-                }
-            });
-        } else {
-
-            startActivity(new Intent(MainActivity.this, StartActivity.class));
-            finish();
-        }
-    }
 
 }

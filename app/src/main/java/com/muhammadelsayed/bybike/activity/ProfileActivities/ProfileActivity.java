@@ -25,10 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.WaitingActivity;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.muhammadelsayed.bybike.activity.utils.RealPathUtil;
+import com.muhammadelsayed.bybike.activity.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -39,7 +41,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -59,6 +61,8 @@ public class ProfileActivity extends AppCompatActivity {
         Log.wtf(TAG, "onCreate() has been instantiated");
 
         super.onCreate(savedInstanceState);
+        Utils.checkUserSession(ProfileActivity.this);
+
         setContentView(R.layout.activity_profile);
 
         // initializing activity widgets

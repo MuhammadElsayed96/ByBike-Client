@@ -5,23 +5,37 @@ import java.io.Serializable;
 
 public class Rider implements Serializable {
 
-    private String id;
+    private int id;
     private String uuid;
     private String name;
     private String email;
     private String phone;
     private String image;
-    private String Vehicle_ID;
+    private int Vehicle_ID;
     private String Vehicle_Data;
     private String created_at;
     private String updated_at;
+    private Transportation vehicle;
 
 
+    public Rider(int id, String uuid, String name, String email, String phone, String image, int vehicle_ID, String vehicle_Data, String created_at, String updated_at, Transportation vehicle) {
+        this.id = id;
+        this.uuid = uuid;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.image = image;
+        Vehicle_ID = vehicle_ID;
+        Vehicle_Data = vehicle_Data;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.vehicle = vehicle;
+    }
 
     public Rider() {
     }
 
-    public Rider(String id, String uuid, String name, String email, String phone, String image, String vehicle_ID, String vehicle_Data, String created_at, String updated_at) {
+    public Rider(int id, String uuid, String name, String email, String phone, String image, int vehicle_ID, String vehicle_Data, String created_at, String updated_at) {
         this.id = id;
         this.uuid = uuid;
         this.name = name;
@@ -34,11 +48,19 @@ public class Rider implements Serializable {
         this.updated_at = updated_at;
     }
 
-    public String getVehicle_ID() {
+    public Transportation getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Transportation vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public int getVehicle_ID() {
         return Vehicle_ID;
     }
 
-    public void setVehicle_ID(String vehicle_ID) {
+    public void setVehicle_ID(int vehicle_ID) {
         this.Vehicle_ID = vehicle_ID;
     }
 
@@ -50,11 +72,11 @@ public class Rider implements Serializable {
         this.Vehicle_Data = vehicle_Data;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -128,6 +150,7 @@ public class Rider implements Serializable {
                 ", Vehicle_Data='" + Vehicle_Data + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
+                ", vehicle=" + vehicle +
                 '}';
     }
 }

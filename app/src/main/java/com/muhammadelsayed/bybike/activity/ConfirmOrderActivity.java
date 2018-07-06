@@ -1,5 +1,6 @@
 package com.muhammadelsayed.bybike.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -32,7 +33,7 @@ import retrofit2.Response;
 
 import static com.muhammadelsayed.bybike.activity.MainActivity.destination;
 import static com.muhammadelsayed.bybike.activity.MainActivity.origin;
-import static com.muhammadelsayed.bybike.activity.fragment.LoginFragment.currentUser;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 
 public class ConfirmOrderActivity extends AppCompatActivity {
 
@@ -54,11 +55,12 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.wtf(TAG, "onCreate() has been instantiated");
-
         super.onCreate(savedInstanceState);
+        Utils.checkUserSession(ConfirmOrderActivity.this);
         setContentView(R.layout.activity_confirm_order);
         Log.d(TAG, "onCreate: started !!");
 
+        currentOrder = null;
         setupWidgets();
 
     }
@@ -89,7 +91,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
             placeFrom.setText(getIntent().getStringExtra("placeFrom"));
             placeTo.setText(getIntent().getStringExtra("placeTo"));
-            totalCost.setText(getIntent().getStringExtra("totalCost"));
+            totalCost.setText(""+getIntent().getIntExtra("totalCost", 0));
 
         }
 
@@ -139,7 +141,12 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
                         Log.e(TAG, "onFailure: " + t.getMessage() + " ----\n----" + t.getCause());
                         Log.d(TAG, "onFailure: Order = " + currentOrder);
-                        Toast.makeText(getApplicationContext(), "network error !!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "logging out !!", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(mContext, StartActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
                     }
                 });
 
