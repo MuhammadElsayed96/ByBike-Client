@@ -59,20 +59,22 @@
             android:layout_weight="1"
             android:gravity="start"
             android:textColor="#585858"
-            android:textSize="16sp"
-            />
+            android:textSize="16sp" />
 
         <me.zhanghai.android.materialratingbar.MaterialRatingBar
             android:id="@+id/trip_rating_bar"
+            style="@style/Widget.MaterialRatingBar.RatingBar.Indicator.Small"
             android:layout_width="110dp"
             android:layout_height="21dp"
             android:layout_marginTop="8dp"
+            android:clickable="false"
+            android:maxHeight="48dp"
+            android:minHeight="48dp"
             android:numStars="5"
             android:progressBackgroundTint="#c8c8c8"
             android:progressTint="#000"
             android:rating="3"
             android:stepSize="1"
-            android:clickable="false"
             app:mrb_fillBackgroundStars="true" />
     </LinearLayout>
 </LinearLayout>
