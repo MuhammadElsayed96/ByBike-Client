@@ -326,7 +326,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
         if (currentOrder != null) {
 
             Log.d(TAG, "onCreate: currentOrder = " + currentOrder);
-            refDriver = FirebaseDatabase.getInstance().getReference("Drivers").child(String.valueOf(currentOrder.getId())).child("l");
+            refDriver = FirebaseDatabase.getInstance().getReference("Drivers").child(String.valueOf(orderInfo.getTransporter().getUuid())).child("l");
             Log.wtf(TAG, "refDriver = " + refDriver);
 
             refDriver.addValueEventListener(new ValueEventListener() {
