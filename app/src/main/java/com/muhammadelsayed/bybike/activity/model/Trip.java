@@ -13,8 +13,9 @@ public class Trip {
     private String created_at;
     private String updated_at;
     private OrderReceive order_receive;
+    private Rate rate;
 
-    public Trip(int id, String uuid, int status, String sender_Lat, String sender_Lng, String receiver_lat, String receiver_lng, String user, String created_at, String updated_at, OrderReceive order_receive) {
+    public Trip(int id, String uuid, int status, String sender_Lat, String sender_Lng, String receiver_lat, String receiver_lng, String user, String created_at, String updated_at, OrderReceive order_receive, com.muhammadelsayed.bybike.activity.model.Rate rate) {
         this.id = id;
         this.uuid = uuid;
         this.status = status;
@@ -26,6 +27,7 @@ public class Trip {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.order_receive = order_receive;
+        rate = rate;
     }
 
     public Trip() {
@@ -119,6 +121,14 @@ public class Trip {
         this.order_receive = order_receive;
     }
 
+    public com.muhammadelsayed.bybike.activity.model.Rate getRate() {
+        return rate;
+    }
+
+    public void setRate(com.muhammadelsayed.bybike.activity.model.Rate rate) {
+        rate = rate;
+    }
+
     @Override
     public String toString() {
         return "Trip{" +
@@ -133,6 +143,9 @@ public class Trip {
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 ", order_receive=" + order_receive +
+                ", Rate='" + rate + '\'' +
                 '}';
     }
 }
+
+

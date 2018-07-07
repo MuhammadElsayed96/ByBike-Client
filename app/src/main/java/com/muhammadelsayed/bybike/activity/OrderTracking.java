@@ -82,7 +82,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
     private DatabaseReference refOrders;
     private ValueEventListener mStatusChangedListener;
 
-    private OrderInfoModel orderInfo;
+    public static OrderInfoModel orderInfo;
 //    private Order currentOrder;
     private LatLng riderLatLng;
 
@@ -115,7 +115,6 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
         Log.wtf(TAG, "currentOrder = " + currentOrder);
         Log.wtf(TAG, "currentUser = " + currentUser);
 
-
         refOrders = FirebaseDatabase.getInstance().getReference("orders").child(String.valueOf(currentOrder.getId()));
 
         mStatusChangedListener = refOrders.addValueEventListener(new ValueEventListener() {
@@ -127,9 +126,10 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                 Log.wtf(TAG, "STATUS = " + status);
 
                 if (status == 5) {
-
                     Toast.makeText(OrderTracking.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Canceled By User");
+                    btnCancelTrip.setVisibility(View.GONE);
+
                     Intent intent = new Intent(OrderTracking.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -144,9 +144,19 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                     startActivity(intent);
                     finish();
                     refOrders.removeEventListener(mStatusChangedListener);
+
                 } else if (status == 3) {
                     Toast.makeText(OrderTracking.this, "Received !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Received");
+                    btnCancelTrip.setVisibility(View.GONE);
+
+                    Intent rate = new Intent(OrderTracking.this, RiderRating.class);
+                    rate.putExtra("riderName", orderInfo.getTransporter().getName());
+                    rate.putExtra("riderPhoto", orderInfo.getTransporter().getImage());
+                    startActivity(rate);
+
+                    refOrders.removeEventListener(mStatusChangedListener);
+
                 } else if (status == 2) {
                     Toast.makeText(OrderTracking.this, "Approved !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Approved");
@@ -164,10 +174,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                 Log.wtf(TAG, "onCancelled()");
             }
         });
-
-
     }
-
 
     private void setupWidgets() {
         Log.e(TAG, "setupWidgets() has been instantiated");
@@ -192,13 +199,9 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
 
             OrderClient service = RetrofitClientInstance.getRetrofitInstance()
                     .create(OrderClient.class);
-
             TripModel trip = new TripModel(currentUser.getToken(), currentOrder.getUuid());
-
             Log.d(TAG, "currentUser: " + currentUser);
-
             Call<RetroResponse> call = service.cancelOrder(trip);
-
             call.enqueue(new Callback<RetroResponse>() {
                 @Override
                 public void onResponse(Call<RetroResponse> call, Response<RetroResponse> response) {
@@ -212,13 +215,11 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                         Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
                     }
                 }
-
                 @Override
                 public void onFailure(Call<RetroResponse> call, Throwable t) {
 
                     Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
                     Toast.makeText(OrderTracking.this, "Failed", Toast.LENGTH_SHORT).show();
-
                 }
             });
 

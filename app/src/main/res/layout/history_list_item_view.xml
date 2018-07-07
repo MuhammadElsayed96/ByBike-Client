@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingEnd="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="4dp"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        tools:ignore="RtlSymmetry">
+
+        <TextView
+            android:id="@+id/trip_date_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#101010"
+            android:textSize="18sp"
+            tools:text="6/14/18 at 6:53 PM" />
+
+        <TextView
+            android:id="@+id/trip_cost_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:gravity="end"
+            android:textColor="#101010"
+            android:textSize="18sp"
+            tools:text="L.E 15.00" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:paddingEnd="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="16dp"
+        tools:ignore="RtlSymmetry">
+
+        <TextView
+            android:id="@+id/trip_rider_tv"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:textColor="#585858"
+            android:textSize="16sp"
+            />
+
+        <me.zhanghai.android.materialratingbar.MaterialRatingBar
+            android:id="@+id/trip_rating_bar"
+            android:layout_width="110dp"
+            android:layout_height="21dp"
+            android:layout_marginTop="8dp"
+            android:numStars="5"
+            android:progressBackgroundTint="#c8c8c8"
+            android:progressTint="#000"
+            android:rating="3"
+            android:stepSize="1"
+            android:clickable="false"
+            app:mrb_fillBackgroundStars="true" />
+    </LinearLayout>
+</LinearLayout>

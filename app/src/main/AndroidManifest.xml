@@ -26,10 +26,9 @@
         <!-- Activities -->
         <activity
             android:name=".activity.SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait"
             android:configChanges="orientation"
-            >
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,7 +49,7 @@
         <activity
             android:name=".activity.ConfirmOrderActivity"
             android:label="Confirm"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
         <activity
             android:name=".activity.ProfileActivities.ProfileActivity"
             android:label="Edit Profile" />
@@ -74,16 +73,20 @@
             android:name=".activity.ProfileActivities.EditPasswordActivity"
             android:label="Edit Password"
             android:launchMode="singleTop" />
-        <activity android:name=".activity.HistoryActivity"
-                android:launchMode="singleTop"/>
-
-        <activity android:name=".activity.WaitingActivity"
-                android:launchMode="singleTop" />
-
+        <activity
+            android:name=".activity.HistoryActivity"
+            android:launchMode="singleTop"
+            android:label="History" />
+        <activity
+            android:name=".activity.WaitingActivity"
+            android:launchMode="singleTop" />
         <activity
             android:name=".activity.OrderTracking"
             android:label="@string/title_activity_order_tracking"
-            android:launchMode="singleTop"/>
+            />
+        <activity android:name=".activity.RiderRating"
+            android:theme="@style/Theme.Transparent"
+            />
     </application>
 
 </manifest>
