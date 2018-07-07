@@ -75,6 +75,7 @@ public class WaitingActivity extends AppCompatActivity {
 
                     getOrderInfo();
                     refOrders.removeEventListener(mStatusChangedListener);
+
                 } else if (status == 5) {
                     Toast.makeText(WaitingActivity.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Canceled By User");
@@ -156,7 +157,8 @@ public class WaitingActivity extends AppCompatActivity {
 
         TripModel trip = new TripModel(currentUser.getToken(), currentOrder.getUuid());
 
-        Log.d(TAG, "currentUser: " + currentUser);
+        Log.d(TAG, "currentUser: " + currentUser.getToken());
+        Log.d(TAG, "getOrderInfo: " + currentOrder.getUuid());
 
         Call<OrderInfoModel> call = service.getOrderInfo(trip);
 
