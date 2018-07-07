@@ -1,5 +1,6 @@
 package com.muhammadelsayed.bybike.activity;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,8 @@ import com.muhammadelsayed.bybike.activity.network.OrderClient;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.muhammadelsayed.bybike.activity.utils.Utils;
+import com.romainpiel.shimmer.Shimmer;
+import com.romainpiel.shimmer.ShimmerTextView;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,9 +48,10 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
     // widgets
     private Toolbar toolbar;
-    private TextView placeFrom, placeTo, totalCost;
+    private TextView placeFrom, placeTo;
+    private ShimmerTextView totalCost, totalCostTv;
     private Button confirmOrder;
-
+    private Shimmer shimmer;
     public static Order currentOrder;
 
     @Override
@@ -81,6 +85,35 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         placeFrom = findViewById(R.id.placeFrom);
         placeTo = findViewById(R.id.placeTo);
         totalCost = findViewById(R.id.totalCost);
+        totalCostTv = findViewById(R.id.total_cost_tv);
+        shimmer = new Shimmer();
+        shimmer.start(totalCost);
+        shimmer.start(totalCostTv);
+        shimmer.setRepeatCount(50)
+                .setDuration(500)
+                .setStartDelay(300)
+                .setDirection(Shimmer.ANIMATION_DIRECTION_RTL)
+                .setAnimatorListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
 
         confirmOrder = findViewById(R.id.confirmOrder);
 
@@ -88,7 +121,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
             placeFrom.setText(getIntent().getStringExtra("placeFrom"));
             placeTo.setText(getIntent().getStringExtra("placeTo"));
-            totalCost.setText(""+getIntent().getIntExtra("totalCost", 0) + "\nL.E.");
+            totalCost.setText("" + getIntent().getIntExtra("totalCost", 0) + "\nL.E.");
 
         }
 
@@ -151,7 +184,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         switch (item.getItemId()) {
-            case android.R.id.home :
+            case android.R.id.home:
                 onBackPressed();
                 break;
         }
