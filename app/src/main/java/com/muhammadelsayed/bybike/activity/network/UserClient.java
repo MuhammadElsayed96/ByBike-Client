@@ -36,6 +36,6 @@ public interface UserClient {
     Call<UserModel> getUserInfo(@Body User user);
 
     @POST("api/user/trip")
-    Call<HistoryModel> getHistory(@Body String api_token);
+    Call<HistoryModel> getHistory(@Body User api_token);
 
 }
