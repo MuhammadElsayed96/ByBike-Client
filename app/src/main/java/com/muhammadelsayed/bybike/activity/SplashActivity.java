@@ -31,9 +31,8 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.wtf(TAG, "onCreate() has been instantiated");
-
         super.onCreate(savedInstanceState);
+        Log.wtf(TAG, "onCreate() has been instantiated");
 
         checkUserSession(SplashActivity.this);
 
@@ -68,22 +67,22 @@ public class SplashActivity extends AppCompatActivity {
                         Log.d(TAG, "onResponse: " + currentUser);
 
                         context.startActivity(new Intent(context, MainActivity.class));
-                        ((Activity)context).finish();
+                        ((Activity) context).finish();
                     }
                 }
+
                 @Override
                 public void onFailure(Call<UserModel> call, Throwable t) {
 
                     context.startActivity(new Intent(context, StartActivity.class));
-                    ((Activity)context).finish();
+                    ((Activity) context).finish();
                 }
             });
         } else {
             context.startActivity(new Intent(context, StartActivity.class));
-            ((Activity)context).finish();
+            ((Activity) context).finish();
         }
     }
-
 
 
 }
