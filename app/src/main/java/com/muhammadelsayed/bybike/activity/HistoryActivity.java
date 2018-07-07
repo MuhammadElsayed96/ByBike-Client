@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.model.HistoryModel;
 import com.muhammadelsayed.bybike.activity.model.RetroResponse;
+import com.muhammadelsayed.bybike.activity.model.Trip;
 import com.muhammadelsayed.bybike.activity.model.TripModel;
 import com.muhammadelsayed.bybike.activity.model.User;
 import com.muhammadelsayed.bybike.activity.network.OrderClient;
@@ -19,6 +20,9 @@ import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
 import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.muhammadelsayed.bybike.activity.utils.HistoryAdapter;
 import com.muhammadelsayed.bybike.activity.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
     // vars
     private Context mContext;
     private HistoryModel historyModel;
+    private List<Trip> upsideDownHistory;
 
 
     // widgets
@@ -54,12 +59,11 @@ public class HistoryActivity extends AppCompatActivity {
         getHistory();
 
 
-
     }
 
     private void getHistory() {
         historyModel = new HistoryModel();
-
+        upsideDownHistory = new ArrayList<>();
         UserClient service = RetrofitClientInstance.getRetrofitInstance()
                 .create(UserClient.class);
 
@@ -71,7 +75,7 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<HistoryModel> call, Response<HistoryModel> response) {
 
-                if(response.body() != null) {
+                if (response.body() != null) {
 
                     historyModel = response.body();
                     Log.d(TAG, "onResponse: " + response.body());
@@ -81,9 +85,12 @@ public class HistoryActivity extends AppCompatActivity {
                         Log.d(TAG, "\n ID = " + historyModel.getTrips().get(i).getId() + "\n Rate = " + historyModel.getTrips().get(i).getRate());
                     }
 
-                    historyAdapter = new HistoryAdapter(HistoryActivity.this, historyModel.getTrips());
-                    tripsListView.setAdapter(historyAdapter);
+                    for (int i = historyModel.getTrips().size() - 1; i >= 0; i--) {
+                        upsideDownHistory.add(historyModel.getTrips().get(i));
+                    }
 
+                    historyAdapter = new HistoryAdapter(HistoryActivity.this, upsideDownHistory);
+                    tripsListView.setAdapter(historyAdapter);
 
                 } else {
                     Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
@@ -93,7 +100,7 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<HistoryModel> call, Throwable t) {
 
-                Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
+                Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
                 Toast.makeText(HistoryActivity.this, "Failed", Toast.LENGTH_SHORT).show();
 
             }
@@ -101,7 +108,6 @@ public class HistoryActivity extends AppCompatActivity {
 
 
     }
-
 
 
     /******************** LAYOUT ********************/
@@ -128,7 +134,7 @@ public class HistoryActivity extends AppCompatActivity {
         Log.wtf(TAG, "onOptionsItemSelected() has been instantiated");
 
         switch (item.getItemId()) {
-            case android.R.id.home :
+            case android.R.id.home:
                 onBackPressed();
                 break;
         }
