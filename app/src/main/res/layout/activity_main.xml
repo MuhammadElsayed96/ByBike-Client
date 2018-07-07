@@ -35,6 +35,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
+            android:elevation="5dp"
             android:background="@drawable/border_strokeless">
 
             <LinearLayout
@@ -170,11 +171,12 @@
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:visibility="visible"
+        android:theme="@style/NavigationDrawerStyle"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer">
 
@@ -183,7 +185,6 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom|center"
-            android:background="@color/colorAccent"
             android:gravity="center">
 
             <ImageView
@@ -196,9 +197,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text="@string/logout"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textColor="@color/error"
+                android:textStyle="bold"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
