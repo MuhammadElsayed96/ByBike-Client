@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements
 
     PendingResult<LocationSettingsResult> pendingResult;
 
-    private List<Transportation> transportations = Arrays.asList(new Transportation(), new Transportation(), new Transportation());
+    private List<Transportation> transportations = Arrays.asList(new Transportation());
 
     public static LatLng origin = null;
     public static LatLng destination = null;
@@ -767,14 +767,14 @@ public class MainActivity extends AppCompatActivity implements
         Log.wtf(TAG, "showSubmitLayout() has been instantiated");
 
         transportations.get(0).setTransType("Bicycle");
-        transportations.get(1).setTransType("Motorcycle");
-        transportations.get(2).setTransType("Car");
+//        transportations.get(1).setTransType("Motorcycle");
+//        transportations.get(2).setTransType("Car");
         transportations.get(0).setTransImg(R.drawable.ic_bike);
-        transportations.get(1).setTransImg(R.drawable.ic_motorcycle);
-        transportations.get(2).setTransImg(R.drawable.ic_car);
+//        transportations.get(1).setTransImg(R.drawable.ic_motorcycle);
+//        transportations.get(2).setTransImg(R.drawable.ic_car);
         transportations.get(0).setTransCost(10);
-        transportations.get(1).setTransCost(18);
-        transportations.get(2).setTransCost(24);
+//        transportations.get(1).setTransCost(18);
+//        transportations.get(2).setTransCost(24);
 
         submitLayout.setVisibility(View.VISIBLE);
 

@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.model.LatLng;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.model.Order;
+import com.muhammadelsayed.bybike.activity.model.OrderInfoModel;
 import com.muhammadelsayed.bybike.activity.model.RetroResponse;
 import com.muhammadelsayed.bybike.activity.model.TripModel;
 import com.muhammadelsayed.bybike.activity.network.OrderClient;
@@ -48,8 +49,7 @@ public class WaitingActivity extends AppCompatActivity {
 
     private DatabaseReference refOrders;
 
-    private LatLng riderLatLng;
-
+    public static OrderInfoModel orderInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +73,7 @@ public class WaitingActivity extends AppCompatActivity {
 
                 if (status == 1) {
 
-
-                    Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
-//                    intent.putExtra("currentOrder", currentOrder);
-                    startActivity(intent);
-                    finish();
+                    getOrderInfo();
                     refOrders.removeEventListener(mStatusChangedListener);
                 } else if (status == 5) {
                     Toast.makeText(WaitingActivity.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
@@ -151,5 +147,44 @@ public class WaitingActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void getOrderInfo() {
+
+        OrderClient service = RetrofitClientInstance.getRetrofitInstance()
+                .create(OrderClient.class);
+
+        TripModel trip = new TripModel(currentUser.getToken(), currentOrder.getUuid());
+
+        Log.d(TAG, "currentUser: " + currentUser);
+
+        Call<OrderInfoModel> call = service.getOrderInfo(trip);
+
+        call.enqueue(new Callback<OrderInfoModel>() {
+            @Override
+            public void onResponse(Call<OrderInfoModel> call, Response<OrderInfoModel> response) {
+
+                if(response.body() != null) {
+
+                    orderInfo = response.body();
+                    Log.d(TAG, "onResponse: " + orderInfo);
+                    Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OrderInfoModel> call, Throwable t) {
+
+                Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
+                Toast.makeText(WaitingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
     }
 }

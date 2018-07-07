@@ -29,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.OrderTracking.orderInfo;
+import static com.muhammadelsayed.bybike.activity.WaitingActivity.orderInfo;
 import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 
 public class RiderRating extends AppCompatActivity {
