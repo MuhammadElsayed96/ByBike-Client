@@ -149,7 +149,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="2"
                     android:background="@drawable/transparent_button"
-                    android:text="Submit"
+                    android:text="Confirm"
                     android:textColor="#1fbad6" />
 
                 <Button
@@ -174,7 +174,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:visibility="gone"
+        android:visibility="visible"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer">
 
