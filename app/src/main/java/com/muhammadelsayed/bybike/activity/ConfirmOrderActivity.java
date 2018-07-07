@@ -46,8 +46,6 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     // widgets
     private Toolbar toolbar;
     private TextView placeFrom, placeTo, totalCost;
-    private EditText notes;
-    private Spinner spinnerPayment;
     private Button confirmOrder;
 
     public static Order currentOrder;
@@ -83,23 +81,16 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         placeFrom = findViewById(R.id.placeFrom);
         placeTo = findViewById(R.id.placeTo);
         totalCost = findViewById(R.id.totalCost);
-        notes = findViewById(R.id.notes);
-        spinnerPayment = findViewById(R.id.spinnerPayment);
+
         confirmOrder = findViewById(R.id.confirmOrder);
 
         if (getIntent().hasExtra("placeFrom") && getIntent().hasExtra("placeTo") && getIntent().hasExtra("totalCost")) {
 
             placeFrom.setText(getIntent().getStringExtra("placeFrom"));
             placeTo.setText(getIntent().getStringExtra("placeTo"));
-            totalCost.setText(""+getIntent().getIntExtra("totalCost", 0));
+            totalCost.setText(""+getIntent().getIntExtra("totalCost", 0) + "\nL.E.");
 
         }
-
-        String[] payments = {"Cash", "Fawry"};
-
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, payments);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-        spinnerPayment.setAdapter(spinnerArrayAdapter);
 
         confirmOrder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +140,6 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-
             }
 
         });

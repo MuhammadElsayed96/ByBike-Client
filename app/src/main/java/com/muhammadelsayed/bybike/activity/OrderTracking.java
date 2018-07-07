@@ -62,6 +62,7 @@ import retrofit2.Response;
 
 import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 import static com.muhammadelsayed.bybike.activity.ConfirmOrderActivity.currentOrder;
+import static com.muhammadelsayed.bybike.activity.WaitingActivity.orderInfo;
 
 
 public class OrderTracking extends FragmentActivity implements OnMapReadyCallback,
@@ -82,7 +83,6 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
     private DatabaseReference refOrders;
     private ValueEventListener mStatusChangedListener;
 
-    public static OrderInfoModel orderInfo;
 //    private Order currentOrder;
     private LatLng riderLatLng;
 
@@ -110,7 +110,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        getOrderInfo();
+        setupWidgets();
 
         Log.wtf(TAG, "currentOrder = " + currentOrder);
         Log.wtf(TAG, "currentUser = " + currentUser);
@@ -249,42 +249,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
     };
 
 
-    private void getOrderInfo() {
 
-        OrderClient service = RetrofitClientInstance.getRetrofitInstance()
-                .create(OrderClient.class);
-
-        TripModel trip = new TripModel(currentUser.getToken(), currentOrder.getUuid());
-
-        Log.d(TAG, "currentUser: " + currentUser);
-
-        Call<OrderInfoModel> call = service.getOrderInfo(trip);
-
-        call.enqueue(new Callback<OrderInfoModel>() {
-            @Override
-            public void onResponse(Call<OrderInfoModel> call, Response<OrderInfoModel> response) {
-
-                if(response.body() != null) {
-
-                    orderInfo = response.body();
-                    Log.d(TAG, "onResponse: " + orderInfo);
-                    setupWidgets();
-
-                } else {
-                    Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OrderInfoModel> call, Throwable t) {
-
-                Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
-                Toast.makeText(OrderTracking.this, "Failed", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-    }
 
     private void displayMarkers() {
         Log.wtf(TAG, "displayOriginDestination() has been instantiated");

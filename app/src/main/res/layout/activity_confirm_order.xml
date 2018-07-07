@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,160 +9,126 @@
         android:id="@+id/app_bar"
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_below="@+id/app_bar"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/linear_from"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="10dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="From"
                 android:textColor="#000"
-                android:textStyle="bold"
                 android:textSize="15sp"
-                />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/placeFrom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="أهل الشام , المحافظة , المنصورة"
+                android:text=""
                 android:textColor="#333"
-                android:textSize="14sp"
-                />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <View
-            android:background="#DDD"
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
+            android:layout_height="1dp"
+            android:background="#DDD" />
 
         <LinearLayout
             android:id="@+id/linear_to"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/divider"
+            android:orientation="vertical"
             android:padding="10dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="To"
                 android:textColor="#000"
-                android:textStyle="bold"
                 android:textSize="15sp"
-                />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/placeTo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Carrefouur, Mansoura, Egypt"
+                android:text=""
                 android:textColor="#333"
-                android:textSize="14sp"
-                />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <View
-            android:background="#DDD"
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_pay"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"/>
-            <Spinner
-                android:id="@+id/spinnerPayment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </Spinner>
-        </LinearLayout>
+            android:layout_height="1dp"
+            android:background="#DDD" />
 
 
         <View
-            android:background="#DDD"
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
-        <EditText
-            android:id="@+id/notes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_note"
-            android:drawablePadding="5dp"
-            android:paddingLeft="0dp"
-            android:hint="any notes to the driver ?"/>
+            android:layout_height="1dp"
+            android:background="#DDD" />
 
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="56dp"
             android:background="@drawable/bold_bordered_bg"
-            android:padding="20dp"
             android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp">
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total Cost"
                 android:textColor="@color/black"
-                android:textSize="22sp"
-                />
+                android:textSize="22sp" />
+
             <TextView
                 android:id="@+id/totalCost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12 L.E."
-                android:textSize="36sp"
+                android:text="10 L.E."
                 android:textColor="@color/black"
-                android:textStyle="bold"/>
-
+                android:textSize="36sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <Button
             android:id="@+id/confirmOrder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/white"
-            android:text="Confirm"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginRight="36dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:background="@drawable/transparent_button_black"
+            android:text="Confirm"
+            android:textColor="#000" />
 
     </LinearLayout>
-
-
-
 
 
 </RelativeLayout>
