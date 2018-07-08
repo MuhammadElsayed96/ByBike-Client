@@ -51,7 +51,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="4dp"
                     android:layout_weight="55"
-                    android:text="68 Farida Hassan st."
+                    android:text="From"
                     android:textColor="#333"
                     android:textSize="14sp" />
 
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="5"
-                    android:text="Carrefouur, Mansoura, Egypt"
+                    android:text="Set up the destination"
                     android:textColor="#333"
                     android:textSize="14sp" />
 
