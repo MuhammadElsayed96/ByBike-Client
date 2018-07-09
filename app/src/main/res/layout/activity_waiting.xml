@@ -14,26 +14,24 @@
 
         android:layout_marginBottom="60dp">
 
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/spin_kit"
             style="@style/SpinKitView.Large.Circle"
             android:layout_width="220dp"
             android:layout_height="220dp"
-            android:layout_marginTop="120dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="120dp"
             app:SpinKit_Color="@color/white_greyish" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Finding Rider ..."
-            android:textColor="@color/white_greyish"
-            android:layout_marginTop="30dp"
-            android:textSize="25sp"
             android:layout_below="@+id/spin_kit"
             android:layout_centerHorizontal="true"
-            />
+            android:layout_marginTop="30dp"
+            android:text="Finding Rider ..."
+            android:textColor="@color/white_greyish"
+            android:textSize="25sp" />
 
     </RelativeLayout>
 
@@ -41,11 +39,12 @@
         android:id="@+id/btn_cancel_order"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="32dp"
+        android:background="@drawable/transparent_button_red_transparent"
         android:text="Cancel"
-        android:background="@color/error"
-        android:textColor="@color/white_greyish"
+        android:textColor="#ff5252"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"/>
+        android:textStyle="bold" />
 
 </RelativeLayout>
