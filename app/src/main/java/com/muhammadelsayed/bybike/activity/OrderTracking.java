@@ -324,9 +324,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
 
         flag = false;
 
-        if (currentOrder != null) {
-
-            Log.d(TAG, "onCreate: currentOrder = " + currentOrder);
+            Log.d(TAG, "onMapReady: currentOrder = " + currentOrder);
             refDriver = FirebaseDatabase.getInstance().getReference("Drivers").child(String.valueOf(orderInfo.getTransporter().getUuid())).child("l");
             Log.wtf(TAG, "refDriver = " + refDriver);
 
@@ -358,8 +356,6 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
 
                 }
             });
-
-        }
 
     }
 
