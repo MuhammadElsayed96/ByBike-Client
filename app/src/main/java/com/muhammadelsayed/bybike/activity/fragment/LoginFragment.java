@@ -175,7 +175,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 }
                             } else {
 
-                                Toast.makeText(getActivity(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
 
                             }
 

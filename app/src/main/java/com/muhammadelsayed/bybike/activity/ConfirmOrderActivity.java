@@ -62,9 +62,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirm_order);
         Log.d(TAG, "onCreate: started !!");
 
-        currentOrder = null;
         setupWidgets();
-
     }
 
 
@@ -146,15 +144,15 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                         if (response.body() != null) {
 
                             currentOrder = response.body().getOrder();
-                            Log.d(TAG, "onResponse: " + currentOrder);
-                            Toast.makeText(ConfirmOrderActivity.this, "Succeeded", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "Current Order: " + currentOrder);
+//                            Toast.makeText(ConfirmOrderActivity.this, "Succeeded", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(mContext, WaitingActivity.class);
                             startActivity(intent);
 
                         } else {
 
-                            Toast.makeText(getApplicationContext(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getApplicationContext(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
 
                         }
 
@@ -165,7 +163,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
                         Log.e(TAG, "onFailure: " + t.getMessage() + " ----\n----" + t.getCause());
                         Log.d(TAG, "onFailure: Order = " + currentOrder);
-                        Toast.makeText(getApplicationContext(), "logging out !!", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "logging out !!", Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(mContext, StartActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

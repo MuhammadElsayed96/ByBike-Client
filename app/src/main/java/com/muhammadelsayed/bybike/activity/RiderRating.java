@@ -63,7 +63,7 @@ public class RiderRating extends AppCompatActivity {
         mRiderRate.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Toast.makeText(RiderRating.this, "RATE = " + rating, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(RiderRating.this, "RATE = " + rating, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -104,13 +104,13 @@ public class RiderRating extends AppCompatActivity {
                             startActivity(intent);
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getApplicationContext(), "I have no idea what's happening\nbut, something is terribly wrong !!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<RetroResponse> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "logging out !!", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "logging out !!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(RiderRating.this, StartActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
