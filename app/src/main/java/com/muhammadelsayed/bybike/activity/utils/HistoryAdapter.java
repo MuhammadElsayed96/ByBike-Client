@@ -100,8 +100,7 @@ public class HistoryAdapter extends BaseAdapter {
 
         if (tripsList.get(position).getRate() != null) {
 
-            String riderRate = String.valueOf(tripsList.get(position).getRate().getRate());
-            holder.tripStarRatingBar.setRating(Float.valueOf("5"));
+            holder.tripStarRatingBar.setRating((float) tripsList.get(position).getRate().getRate());
 
         } else {
             holder.tripStarRatingBar.setRating(0);

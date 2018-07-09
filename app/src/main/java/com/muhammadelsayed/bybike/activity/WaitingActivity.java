@@ -62,6 +62,8 @@ public class WaitingActivity extends AppCompatActivity {
 
         setupWidgets();
 
+        orderInfo = null;
+
         refOrders = FirebaseDatabase.getInstance().getReference("orders").child(String.valueOf(currentOrder.getId()));
 
         mStatusChangedListener = refOrders.addValueEventListener(new ValueEventListener() {
@@ -77,7 +79,7 @@ public class WaitingActivity extends AppCompatActivity {
                     refOrders.removeEventListener(mStatusChangedListener);
 
                 } else if (status == 5) {
-                    Toast.makeText(WaitingActivity.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(WaitingActivity.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Canceled By User");
 //                    Intent intent = new Intent(WaitingActivity.this, ConfirmOrderActivity.class);
 //                    startActivity(intent);
@@ -129,10 +131,10 @@ public class WaitingActivity extends AppCompatActivity {
                         if(response.body() != null) {
 
                             Log.d(TAG, "onResponse: " + response.body().getMessage());
-                            Toast.makeText(WaitingActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(WaitingActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                         } else {
-                            Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
+                            Log.d(TAG, "onResponse: RESPONSE BODY = " + response.errorBody());
                         }
                     }
 
@@ -140,12 +142,10 @@ public class WaitingActivity extends AppCompatActivity {
                     public void onFailure(Call<RetroResponse> call, Throwable t) {
 
                         Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
-                        Toast.makeText(WaitingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(WaitingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
 
                     }
                 });
-
-
             }
         });
     }
@@ -169,21 +169,23 @@ public class WaitingActivity extends AppCompatActivity {
                 if(response.body() != null) {
 
                     orderInfo = response.body();
-                    Log.d(TAG, "onResponse: " + orderInfo);
-                    Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
-                    startActivity(intent);
-                    finish();
+                    Log.d(TAG, "Order Info: " + orderInfo);
+
 
                 } else {
-                    Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
+                    Log.d(TAG, "onResponse: RESPONSE BODY = " + response.errorBody());
                 }
+
+                Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
+                startActivity(intent);
+                finish();
             }
 
             @Override
             public void onFailure(Call<OrderInfoModel> call, Throwable t) {
 
                 Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
-                Toast.makeText(WaitingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(WaitingActivity.this, "Failed", Toast.LENGTH_SHORT).show();
 
             }
         });

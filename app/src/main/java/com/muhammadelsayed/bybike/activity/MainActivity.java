@@ -1,6 +1,7 @@
 package com.muhammadelsayed.bybike.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -70,6 +71,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.muhammadelsayed.bybike.R;
 import com.muhammadelsayed.bybike.activity.ProfileActivities.ProfileActivity;
+import com.muhammadelsayed.bybike.activity.fragment.LoginFragment;
 import com.muhammadelsayed.bybike.activity.model.Transportation;
 import com.muhammadelsayed.bybike.activity.model.User;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
@@ -472,10 +474,10 @@ public class MainActivity extends AppCompatActivity implements
         Log.wtf(TAG, "onRoutingFailure() has been instantiated");
 
         if (e != null) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             Log.d(TAG, "onRoutingFailure: Error: " + e.getMessage());
         } else {
-            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -604,14 +606,14 @@ public class MainActivity extends AppCompatActivity implements
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
-                        Toast.makeText(mContext, "Gps enabled", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, "Gps enabled", Toast.LENGTH_SHORT).show();
                         getDeviceLocation(null);
                         drawRoute(origin, destination);
 
                         break;
                     case Activity.RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to
-                        Toast.makeText(mContext, "Gps Canceled", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, "Gps Canceled", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
@@ -872,6 +874,9 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 //                drawerLayout.closeDrawers();
+
+                SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+                prefEditor.clear().apply();
                 Intent start = new Intent(mContext, StartActivity.class);
                 start.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(start);
