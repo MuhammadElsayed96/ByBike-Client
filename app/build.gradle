@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.muhammadelsayed.bybike"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -63,5 +63,5 @@ dependencies {
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
 
     implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
-}
+    implementation 'io.pcyan:SweetDialog:1.0.0'}
 apply plugin: 'com.google.gms.google-services'
