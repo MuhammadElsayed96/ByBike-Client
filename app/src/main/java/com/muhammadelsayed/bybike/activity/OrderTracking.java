@@ -127,7 +127,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                 Log.wtf(TAG, "STATUS = " + status);
 
                 if (status == 5) {
-//                    Toast.makeText(OrderTracking.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderTracking.this, "Canceled By User !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Canceled By User");
                     btnCancelTrip.setVisibility(View.GONE);
 
@@ -139,7 +139,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
 
                 if (status == 4) {
 
-//                    Toast.makeText(OrderTracking.this, "Canceled By Rider !!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderTracking.this, "Canceled By Rider !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Canceled By Rider");
                     Intent intent = new Intent(OrderTracking.this, MainActivity.class);
                     startActivity(intent);
@@ -147,7 +147,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                     refOrders.removeEventListener(mStatusChangedListener);
 
                 } else if (status == 3) {
-//                    Toast.makeText(OrderTracking.this, "Received !!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderTracking.this, "Received !!", Toast.LENGTH_SHORT).show();
                     Log.wtf(TAG, "STATUS = Received");
                     btnCancelTrip.setVisibility(View.GONE);
 
@@ -155,6 +155,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
                     rate.putExtra("riderName", orderInfo.getTransporter().getName());
                     rate.putExtra("riderPhoto", orderInfo.getTransporter().getImage());
                     startActivity(rate);
+
                     refOrders.removeEventListener(mStatusChangedListener);
 
                 } else if (status == 2) {

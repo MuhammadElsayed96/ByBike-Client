@@ -62,6 +62,8 @@ public class WaitingActivity extends AppCompatActivity {
 
         setupWidgets();
 
+        orderInfo = null;
+
         refOrders = FirebaseDatabase.getInstance().getReference("orders").child(String.valueOf(currentOrder.getId()));
 
         mStatusChangedListener = refOrders.addValueEventListener(new ValueEventListener() {
@@ -168,13 +170,15 @@ public class WaitingActivity extends AppCompatActivity {
 
                     orderInfo = response.body();
                     Log.d(TAG, "Order Info: " + orderInfo);
-                    Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
-                    startActivity(intent);
-                    finish();
+
 
                 } else {
                     Log.d(TAG, "onResponse: RESPONSE BODY = " + response.errorBody());
                 }
+
+                Intent intent = new Intent(WaitingActivity.this, OrderTracking.class);
+                startActivity(intent);
+                finish();
             }
 
             @Override
