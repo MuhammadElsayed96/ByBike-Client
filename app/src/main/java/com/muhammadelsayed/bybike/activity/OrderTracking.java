@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,27 +41,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.muhammadelsayed.bybike.R;
-import com.muhammadelsayed.bybike.activity.ProfileActivities.ProfileActivity;
-import com.muhammadelsayed.bybike.activity.model.Order;
-import com.muhammadelsayed.bybike.activity.model.OrderInfoModel;
 import com.muhammadelsayed.bybike.activity.model.RetroResponse;
 import com.muhammadelsayed.bybike.activity.model.TripModel;
-import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.OrderClient;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
-import com.muhammadelsayed.bybike.activity.network.UserClient;
 import com.muhammadelsayed.bybike.activity.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.pcyan.sweetdialog.SweetDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 import static com.muhammadelsayed.bybike.activity.ConfirmOrderActivity.currentOrder;
+import static com.muhammadelsayed.bybike.activity.SplashActivity.currentUser;
 import static com.muhammadelsayed.bybike.activity.WaitingActivity.orderInfo;
 
 
@@ -69,7 +65,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener,
-        RoutingListener{
+        RoutingListener {
 
     private static final String TAG = "OrderTracking";
 
@@ -83,7 +79,7 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
     private DatabaseReference refOrders;
     private ValueEventListener mStatusChangedListener;
 
-//    private Order currentOrder;
+    //    private Order currentOrder;
     private LatLng riderLatLng;
 
     // widgets
@@ -93,6 +89,10 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
 
     private boolean flag;
+    private SweetDialog riderCancelDialog;
+    private SweetDialog riderDeliveredPackageDialog;
+    private SweetDialog riderOnSiteDialog;
+    private SweetDialog cancelOrderDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,30 +139,76 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
 
                 if (status == 4) {
 
-                    Toast.makeText(OrderTracking.this, "Canceled By Rider !!", Toast.LENGTH_SHORT).show();
-                    Log.wtf(TAG, "STATUS = Canceled By Rider");
-                    Intent intent = new Intent(OrderTracking.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                    refOrders.removeEventListener(mStatusChangedListener);
+                    if (riderCancelDialog != null)
+                        riderCancelDialog = null;
+                    riderCancelDialog = SweetDialog.build()
+                            .setCancelAble(false)
+                            .autoCancel(true)
+                            .setTitle("Rider Cancel")
+                            .setContent("Rider canceled the order")
+                            .setConfirmText("Ok")
+                            .setOnConfirmListener(new SweetDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetDialog sweetDialog) {
+                                    Toast.makeText(OrderTracking.this, "Canceled By Rider !!", Toast.LENGTH_SHORT).show();
+                                    Log.wtf(TAG, "STATUS = Canceled By Rider");
+                                    Intent intent = new Intent(OrderTracking.this, MainActivity.class);
+                                    startActivity(intent);
+                                    sweetDialog.dismiss();
+                                    finish();
+                                    refOrders.removeEventListener(mStatusChangedListener);
+                                }
+                            });
+                    riderCancelDialog.showDialog(getSupportFragmentManager(), "rider_cancel_order");
 
                 } else if (status == 3) {
-                    Toast.makeText(OrderTracking.this, "Received !!", Toast.LENGTH_SHORT).show();
-                    Log.wtf(TAG, "STATUS = Received");
-                    btnCancelTrip.setVisibility(View.GONE);
 
-                    Intent rate = new Intent(OrderTracking.this, RiderRating.class);
-                    rate.putExtra("riderName", orderInfo.getTransporter().getName());
-                    rate.putExtra("riderPhoto", orderInfo.getTransporter().getImage());
-                    startActivity(rate);
+                    if (riderDeliveredPackageDialog != null)
+                        riderDeliveredPackageDialog = null;
+                    riderDeliveredPackageDialog = SweetDialog.build()
+                            .autoCancel(true).setCancelAble(false)
+                            .setTitle("Package Delivered")
+                            .setContent("Rider delivered the package")
+                            .setConfirmText("Ok")
+                            .setOnConfirmListener(new SweetDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetDialog sweetDialog) {
+                                    Toast.makeText(OrderTracking.this, "Received !!", Toast.LENGTH_SHORT).show();
+                                    Log.wtf(TAG, "STATUS = Received");
+                                    btnCancelTrip.setVisibility(View.GONE);
 
-                    refOrders.removeEventListener(mStatusChangedListener);
+                                    Intent rate = new Intent(OrderTracking.this, RiderRating.class);
+                                    rate.putExtra("riderName", orderInfo.getTransporter().getName());
+                                    rate.putExtra("riderPhoto", orderInfo.getTransporter().getImage());
+                                    sweetDialog.dismiss();
+                                    startActivity(rate);
+                                    refOrders.removeEventListener(mStatusChangedListener);
+                                }
+                            });
+                    riderDeliveredPackageDialog.showDialog(getSupportFragmentManager(), "rider_delivered_package");
 
                 } else if (status == 2) {
-//                    Toast.makeText(OrderTracking.this, "Approved !!", Toast.LENGTH_SHORT).show();
-                    Log.wtf(TAG, "STATUS = Approved");
 
-                    btnCancelTrip.setVisibility(View.GONE);
+                    if (riderOnSiteDialog != null)
+                        riderOnSiteDialog = null;
+                    riderOnSiteDialog = SweetDialog.build()
+                            .setCancelAble(false)
+                            .autoCancel(true)
+                            .setTitle("Rider Here")
+                            .setContent("Rider at your doorstep")
+                            .setConfirmText("Ok")
+                            .setOnConfirmListener(new SweetDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetDialog sweetDialog) {
+//                    Toast.makeText(OrderTracking.this, "Approved !!", Toast.LENGTH_SHORT).show();
+                                    Log.wtf(TAG, "STATUS = Approved");
+
+                                    btnCancelTrip.setVisibility(View.GONE);
+
+                                }
+                            });
+                    riderOnSiteDialog.showDialog(getSupportFragmentManager(), "rider_on_site");
+
 
                 } else if (status == 1) {
 //                    Toast.makeText(OrderTracking.this, "Accepted !!", Toast.LENGTH_SHORT).show();
@@ -198,31 +244,54 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
         @Override
         public void onClick(View v) {
 
-            OrderClient service = RetrofitClientInstance.getRetrofitInstance()
-                    .create(OrderClient.class);
-            TripModel trip = new TripModel(currentUser.getToken(), currentOrder.getUuid());
-            Log.d(TAG, "currentUser: " + currentUser);
-            Call<RetroResponse> call = service.cancelOrder(trip);
-            call.enqueue(new Callback<RetroResponse>() {
-                @Override
-                public void onResponse(Call<RetroResponse> call, Response<RetroResponse> response) {
 
-                    if(response.body() != null) {
+            if (cancelOrderDialog != null)
+                cancelOrderDialog = null;
+            cancelOrderDialog = SweetDialog.build()
+                    .setCancelAble(false)
+                    .autoCancel(true)
+                    .setTitle("Cancel order")
+                    .setContent("Are you sure?")
+                    .setConfirmText("Yes, Cancel order")
+                    .setOnConfirmListener(new SweetDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(final SweetDialog sweetDialog) {
+                            OrderClient service = RetrofitClientInstance.getRetrofitInstance()
+                                    .create(OrderClient.class);
+                            TripModel trip = new TripModel(currentUser.getToken(), currentOrder.getUuid());
+                            Log.d(TAG, "currentUser: " + currentUser);
+                            Call<RetroResponse> call = service.cancelOrder(trip);
+                            call.enqueue(new Callback<RetroResponse>() {
+                                @Override
+                                public void onResponse(Call<RetroResponse> call, Response<RetroResponse> response) {
 
-                        Log.d(TAG, "onResponse: " + response.body().getMessage());
+                                    if (response.body() != null) {
+
+                                        Log.d(TAG, "onResponse: " + response.body().getMessage());
 //                        Toast.makeText(OrderTracking.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                        sweetDialog.dismiss();
+                                    } else {
+                                        Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
+                                    }
+                                }
 
-                    } else {
-                        Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
-                    }
-                }
-                @Override
-                public void onFailure(Call<RetroResponse> call, Throwable t) {
+                                @Override
+                                public void onFailure(Call<RetroResponse> call, Throwable t) {
 
-                    Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
+                                    Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
 //                    Toast.makeText(OrderTracking.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
-            });
+                                }
+                            });
+                        }
+                    }).setOnCancelListener(new SweetDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetDialog sweetDialog) {
+                            sweetDialog.dismiss();
+                        }
+                    });
+            cancelOrderDialog.showDialog(getSupportFragmentManager(), "client_cancel_order");
+
+
         }
     };
 
@@ -247,8 +316,6 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
             }
         }
     };
-
-
 
 
     private void displayMarkers() {
@@ -324,38 +391,38 @@ public class OrderTracking extends FragmentActivity implements OnMapReadyCallbac
 
         flag = false;
 
-            Log.d(TAG, "onMapReady: currentOrder = " + currentOrder);
-            refDriver = FirebaseDatabase.getInstance().getReference("Drivers").child(String.valueOf(orderInfo.getTransporter().getUuid())).child("l");
-            Log.wtf(TAG, "refDriver = " + refDriver);
+        Log.d(TAG, "onMapReady: currentOrder = " + currentOrder);
+        refDriver = FirebaseDatabase.getInstance().getReference("Drivers").child(String.valueOf(orderInfo.getTransporter().getUuid())).child("l");
+        Log.wtf(TAG, "refDriver = " + refDriver);
 
-            refDriver.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        refDriver.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    String riderLat = String.valueOf(dataSnapshot.child(String.valueOf(0)).getValue());
-                    String riderLng = String.valueOf(dataSnapshot.child(String.valueOf(1)).getValue());
+                String riderLat = String.valueOf(dataSnapshot.child(String.valueOf(0)).getValue());
+                String riderLng = String.valueOf(dataSnapshot.child(String.valueOf(1)).getValue());
 
-                    Log.wtf(TAG, "DataSnapshot = " + dataSnapshot);
-                    Log.wtf(TAG, "LAT = " + riderLat + " ---------- LNG = " + riderLng);
+                Log.wtf(TAG, "DataSnapshot = " + dataSnapshot);
+                Log.wtf(TAG, "LAT = " + riderLat + " ---------- LNG = " + riderLng);
 
-                    if (!riderLat.equals("null") && !riderLng.equals("null")) {
-                        riderLatLng = new LatLng(Double.parseDouble(riderLat), Double.parseDouble(riderLng));
-                        displayMarkers();
+                if (!riderLat.equals("null") && !riderLng.equals("null")) {
+                    riderLatLng = new LatLng(Double.parseDouble(riderLat), Double.parseDouble(riderLng));
+                    displayMarkers();
 
-                        if (!flag)
-                            moveCamToProperZoom(riderLatLng, origin, destination);
+                    if (!flag)
+                        moveCamToProperZoom(riderLatLng, origin, destination);
 
-                        flag = true;
+                    flag = true;
 //                        Toast.makeText(OrderTracking.this, riderLatLng.toString(), Toast.LENGTH_SHORT).show();
-                    }
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.wtf(TAG, "onCancelled()");
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.wtf(TAG, "onCancelled()");
 
-                }
-            });
+            }
+        });
 
     }
 
