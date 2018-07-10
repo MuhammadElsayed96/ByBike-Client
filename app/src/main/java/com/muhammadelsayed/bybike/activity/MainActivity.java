@@ -454,6 +454,8 @@ public class MainActivity extends AppCompatActivity implements
 
                 routing.execute();
 
+                showSubmitLayout();
+
             }
         }
     }
@@ -517,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements
         for (int i = 0; i < transportations.size(); i++) {
             transportations.get(i).setTransDistance(distance + " - " + duration);
         }
-        showSubmitLayout();
+//        showSubmitLayout();
     }
 
     @Override
@@ -572,6 +574,7 @@ public class MainActivity extends AppCompatActivity implements
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can initialize location
                         // requests here.
+                        getDeviceLocation(null);
 
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:

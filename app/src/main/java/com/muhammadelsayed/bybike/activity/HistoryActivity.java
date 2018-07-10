@@ -1,5 +1,6 @@
 package com.muhammadelsayed.bybike.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -62,6 +63,11 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void getHistory() {
+        final ProgressDialog progressDialog = new ProgressDialog(HistoryActivity.this, R.style.ProgressDialogTheme);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+
         historyModel = new HistoryModel();
         upsideDownHistory = new ArrayList<>();
         UserClient service = RetrofitClientInstance.getRetrofitInstance()
@@ -79,15 +85,11 @@ public class HistoryActivity extends AppCompatActivity {
 
                     historyModel = response.body();
                     Log.d(TAG, "onResponse: " + response.body());
-                    Log.d(TAG, "historyModel: " + historyModel);
-
-                    for (int i = 0; i < historyModel.getTrips().size(); i++) {
-                        Log.d(TAG, "\n ID = " + historyModel.getTrips().get(i).getId() + "\n Rate = " + historyModel.getTrips().get(i).getRate());
-                    }
 
                     for (int i = historyModel.getTrips().size() - 1; i >= 0; i--) {
                         upsideDownHistory.add(historyModel.getTrips().get(i));
                     }
+                    progressDialog.dismiss();
 
                     historyAdapter = new HistoryAdapter(HistoryActivity.this, upsideDownHistory);
                     tripsListView.setAdapter(historyAdapter);
@@ -99,9 +101,9 @@ public class HistoryActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<HistoryModel> call, Throwable t) {
-
+                progressDialog.dismiss();
                 Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
-                Toast.makeText(HistoryActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HistoryActivity.this, "Check Your Connection !!", Toast.LENGTH_SHORT).show();
 
             }
         });

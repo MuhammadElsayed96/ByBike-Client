@@ -1,6 +1,7 @@
 package com.muhammadelsayed.bybike.activity.ProfileActivities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.muhammadelsayed.bybike.R;
+import com.muhammadelsayed.bybike.activity.HistoryActivity;
 import com.muhammadelsayed.bybike.activity.WaitingActivity;
 import com.muhammadelsayed.bybike.activity.model.UserModel;
 import com.muhammadelsayed.bybike.activity.network.RetrofitClientInstance;
@@ -49,7 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int INTENT_REQUEST_CODE = 100;
     private static final int REQUEST_STORAGE_PERMISSION = 200;
 
-    private LinearLayout mLlEditLastname, mLlEditFirstname, mLlEditPhone, mLlEditEmail, mLlEditPassword;
+    private LinearLayout mLlEditLastname, mLlEditFirstname, mLlEditPhone, mLlEditPassword;
     private RelativeLayout mRlProfileImage;
     private TextView mFirstname, mLastname, mPhone, mEmail, mPassword;
     private ImageView mProfileImage;
@@ -176,11 +178,10 @@ public class ProfileActivity extends AppCompatActivity {
                 try {
                     startActivityForResult(intent, INTENT_REQUEST_CODE);
                 } catch (ActivityNotFoundException e) {
-                    Log.d(TAG, "onClick: ActivityNotFoundException !!!!!!!!!!!");
+                    Log.d(TAG, "onClick: ActivityNotFoundException !!");
                     e.printStackTrace();
                 }
             }
-
         }
     };
 
@@ -189,7 +190,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 200 :
+            case REQUEST_STORAGE_PERMISSION :
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -235,6 +236,12 @@ public class ProfileActivity extends AppCompatActivity {
 
                     Call<UserModel> call = service.updateUserProfileImage(token, body);
 
+
+                    final ProgressDialog progressDialog = new ProgressDialog(ProfileActivity.this, R.style.ProgressDialogTheme);
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.setCancelable(true);
+                    progressDialog.show();
+
                     call.enqueue(new Callback<UserModel>() {
                         @Override
                         public void onResponse(Call<UserModel> call, retrofit2.Response<UserModel> response) {
@@ -248,19 +255,23 @@ public class ProfileActivity extends AppCompatActivity {
                                             .error(R.mipmap.icon_launcher)
                                             .into(mProfileImage);
                                     Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+
+
                                 } else {
                                     Log.d(TAG, "onResponse: RESPONSE BODY = " + response.body());
                                 }
                             } else {
                                 Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                             }
+
+                            progressDialog.dismiss();
                         }
 
                         @Override
                         public void onFailure(Call<UserModel> call, Throwable t) {
-
+                            progressDialog.dismiss();
                             Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
-                            Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, "Check Your Connection", Toast.LENGTH_SHORT).show();
 
                         }
                     });
