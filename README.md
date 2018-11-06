@@ -22,3 +22,12 @@ Screenshots
 
 # Submit-Order Screen
 <img src="https://user-images.githubusercontent.com/17935590/48093121-353b3d00-e217-11e8-947c-ff348ad5061b.png" width="800" height="802">
+
+# Order-Tracking Screen
+<img src="https://user-images.githubusercontent.com/17935590/48093215-729fca80-e217-11e8-91e3-8f7e8d88362b.png" width="800" height="802">
+
+# Rate-Rider Screen
+<img src="https://user-images.githubusercontent.com/17935590/48093252-89462180-e217-11e8-962d-3cb07672290d.png" width="800" height="802">
+
+# Side Screen
+<img src="https://user-images.githubusercontent.com/17935590/48093306-aed32b00-e217-11e8-9b8b-8a389363d42a.png" width="800" height="802">
