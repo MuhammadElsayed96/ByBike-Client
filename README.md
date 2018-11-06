@@ -11,23 +11,29 @@ here: https://github.com/MuhammadElsayed96/ByBike-Rider
 
 Screenshots
 -----------
-#### Login
+### Login
 <img src="https://user-images.githubusercontent.com/17935590/48092570-b396df80-e215-11e8-9a14-d019d6349dda.png" width="800" height="802">
 
-#### Sign Up
+### Sign Up
 <img src="https://user-images.githubusercontent.com/17935590/48092988-ceb61f00-e216-11e8-8b83-81a1254453cf.png" width="800" height="802">
 
-#### Home Screen
+### Home Screen
 <img src="https://user-images.githubusercontent.com/17935590/48093079-09b85280-e217-11e8-8fd9-e3484f51d984.png" width="800" height="802">
 
-# Submit-Order Screen
+### Submit-Order Screen
 <img src="https://user-images.githubusercontent.com/17935590/48093121-353b3d00-e217-11e8-947c-ff348ad5061b.png" width="800" height="802">
 
-# Order-Tracking Screen
+### Order-Tracking Screen
 <img src="https://user-images.githubusercontent.com/17935590/48093215-729fca80-e217-11e8-91e3-8f7e8d88362b.png" width="800" height="802">
 
-# Rate-Rider Screen
+### Rate-Rider Screen
 <img src="https://user-images.githubusercontent.com/17935590/48093252-89462180-e217-11e8-962d-3cb07672290d.png" width="800" height="802">
 
-# Side Screen
+### Side Screen
 <img src="https://user-images.githubusercontent.com/17935590/48093306-aed32b00-e217-11e8-9b8b-8a389363d42a.png" width="800" height="802">
+
+### Client-Profile Screen
+<img src="https://user-images.githubusercontent.com/17935590/48093409-e6da6e00-e217-11e8-8c24-cbc5c9edd9b0.png" width="800" height="802">
+
+### History Screen
+<img src="https://user-images.githubusercontent.com/17935590/48093444-fbb70180-e217-11e8-9272-8b18cfa9fb14.png" width="800" height="802">
