@@ -1,10 +1,22 @@
-# ByBike-Client
-### It's related to ByBike-Rider, here: https://github.com/xSuperMu/ByBike-Rider
 ## ByBike
 #### ByBike is an on-demand service that enhances the orders delivery service
 
 A delivery service that allows companies to offer fast delivery without having to set up their own delivery network, and also help people to deliver packages in their city.
 
+#### Project presentation & Live demo: https://drive.google.com/drive/folders/1F2VuwlK-G5Bf1JMIcnpDTblA-kTCBvBd?usp=sharing
+
+# ByBike-Client
+### It's related to ByBike-Rider, here: https://github.com/xSuperMu/ByBike-Rider
+
+Main Features:
+1) Signin/signup.
+2) Live location updates.
+3) Requesting a rider.
+4) Edit client account info.
+5) Calling the rider.
+6) Rating the rider.
+7) Package live tracking.
+8) Requests history.
 
 
 Screenshots
